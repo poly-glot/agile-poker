@@ -45,6 +45,60 @@
         <div class="views">
             <section class="views__child" aria-labelledby="viewHeadingInput">
 
+                <form class="input-source" id="story-points-form">
+                    <fieldset class="poker-cards" id="viewHeadingInput">
+                        <legend class="sr-only">Please select your estimate by selecting one of the following option</legend>
+                        <div class="poker-card">
+                            <input type="radio" disabled="disabled" name="storyPoints" value="-1" id="storyPointsUnknown" class="poker-card__input" checked="checked">
+                            <label for="storyPointsUnknown" aria-label="Unknown" class="poker-card__label">?</label>
+                        </div>
+
+                        <div class="poker-card">
+                            <input type="radio" disabled="disabled" name="storyPoints" value="1" id="storyPoints1" class="poker-card__input">
+                            <label for="storyPoints1" class="poker-card__label">1</label>
+                        </div>
+
+                        <div class="poker-card">
+                            <input type="radio" disabled="disabled" name="storyPoints" value="2" id="storyPoints2" class="poker-card__input">
+                            <label for="storyPoints2" class="poker-card__label">2</label>
+                        </div>
+
+                        <div class="poker-card">
+                            <input type="radio" disabled="disabled" name="storyPoints" value="3" id="storyPoints3" class="poker-card__input">
+                            <label for="storyPoints3" class="poker-card__label">3</label>
+                        </div>
+
+                        <div class="poker-card">
+                            <input type="radio" disabled="disabled" name="storyPoints" value="5" id="storyPoints5" class="poker-card__input">
+                            <label for="storyPoints5" class="poker-card__label">5</label>
+                        </div>
+
+                        <div class="poker-card">
+                            <input type="radio" disabled="disabled" name="storyPoints" value="8" id="storyPoints8" class="poker-card__input">
+                            <label for="storyPoints8" class="poker-card__label">8</label>
+                        </div>
+
+                        <div class="poker-card">
+                            <input type="radio" disabled="disabled" name="storyPoints" value="13" id="storyPoints13" class="poker-card__input">
+                            <label for="storyPoints13" class="poker-card__label">13</label>
+                        </div>
+
+                        <div class="poker-card">
+                            <input type="radio" disabled="disabled" name="storyPoints" value="20" id="storyPoints20" class="poker-card__input">
+                            <label for="storyPoints20" class="poker-card__label">20</label>
+                        </div>
+
+                        <div class="poker-card">
+                            <input type="radio" disabled="disabled" name="storyPoints" value="40" id="storyPoints40" class="poker-card__input">
+                            <label for="storyPoints40" class="poker-card__label">40</label>
+                        </div>
+
+                        <div class="poker-card">
+                            <input type="radio" disabled="disabled" name="storyPoints" value="100" id="storyPoints100" class="poker-card__input">
+                            <label for="storyPoints100" class="poker-card__label">100</label>
+                        </div>
+                    </fieldset>
+                </form>
             </section>
             <section class="views__child" aria-labelledby="viewHeadingOutput">
 

@@ -3,6 +3,7 @@
 import AlertService from './component/alert/alert'
 
 import './component/core-css'
+import './component/poker-cards'
 
 async function main () {
   AlertService.init()
