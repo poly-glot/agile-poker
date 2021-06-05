@@ -19,3 +19,7 @@
   white-space: normal;
   width: auto;
 }
+
+.js-focus-visible :focus:not(.focus-visible) {
+  outline: none;
+}

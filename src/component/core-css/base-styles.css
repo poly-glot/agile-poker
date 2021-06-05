@@ -46,6 +46,10 @@ button {
   text-align: center;
 }
 
+button[disabled] {
+  opacity: 0.3;
+}
+
 button:focus,
 button:hover,
 button:active {
@@ -59,6 +63,31 @@ button:active {
   padding: 0;
 }
 
+.button-danger {
+  background: #ac1b11;
+  border-color: #ac1b11;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+}
+
+.button-link {
+  background: transparent;
+  border: 0;
+  color: #000;
+  font-weight: bold;
+  margin-right: 40px;
+  min-width: 70px;
+  padding: 0;
+}
+
+.button-link:hover,
+.button-link:focus {
+  background: transparent;
+  border: 0;
+}
+
 label {
   display: block;
   font-size: 0.75rem;
@@ -68,4 +97,18 @@ label {
 
 img {
   height: auto;
+}
+
+.no-margin {
+  margin: 0;
+}
+
+.no-padding {
+  padding: 0;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

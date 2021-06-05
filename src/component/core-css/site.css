@@ -1,5 +1,7 @@
 .site__header {
   border-bottom: 1px solid var(--borderColor);
+  display: flex;
+  justify-content: space-between;
   padding: 15px;
 }
 
@@ -19,7 +21,8 @@
   font-weight: normal;
 }
 
-.site__notificaton {
+.site__notification {
+  align-items: center;
   background: #fff;
   border-bottom: 1px solid var(--borderColor);
   display: flex;
@@ -29,5 +32,6 @@
   position: sticky;
   text-transform: uppercase;
   top: 0;
+  min-height: 80px;
   z-index: 5;
 }
