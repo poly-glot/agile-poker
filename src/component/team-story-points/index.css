@@ -1,0 +1,42 @@
+.team-story-points {
+  background: rgba(194, 194, 194, 0.1);
+  padding: 30px 35px 30px 30px;
+  width: 100%;
+}
+
+.team-story-points__entry {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  max-width: 400px;
+  width: 100%;
+}
+
+.team-story-points__points {
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  display: flex;
+  font-weight: bold;
+  height: 64px;
+  justify-content: center;
+  margin-left: 20px;
+  width: 64px;
+}
+
+.team-story-points__label {
+  display: none;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion) {
+  .team-story-points__label {
+    display: flex;
+  }
+
+  .team-story-points__icon {
+    display: none;
+  }
+}

@@ -31,7 +31,7 @@
 </head>
 <body class="site">
     <header class="site__header" aria-label="Main Header">
-        <h1 class="no-margin no-padding"><a href="#">Agile Poker</a></h1>
+        <h1 class="no-margin no-padding"><a href="/">Agile Poker</a></h1>
         <a href="https://github.com/poly-glot/agile-poker" target="_blank" rel="noopener">Github</a>
     </header>
 
@@ -101,7 +101,52 @@
                 </form>
             </section>
             <section class="views__child" aria-labelledby="viewHeadingOutput">
+              <h2 class="sr-only" id="viewHeadingOutput">Team story points</h2>
+              <div class="team-story-points">
+                <div class="team-story-points__content">
+                  <div class="team-story-points__entry">
+                    <div class="team-story-points__name" data-cy="name">User A</div>
+                    <div class="team-story-points__points"  data-cy="points">
+                      5
+                    </div>
+                  </div>
 
+                  <div class="team-story-points__entry">
+                    <div class="team-story-points__name" data-cy="name">User B</div>
+                    <div class="team-story-points__points"  data-cy="points">
+                      <div class="team-story-points__userwaiting">
+                        <div class="team-story-points__label">Waiting</div>
+                        <img src="/assets/loading.gif" alt="Waiting" class="team-story-points__icon" width="20px" height="20px" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="team-story-points__entry">
+                    <div class="team-story-points__name" data-cy="name">User C</div>
+                    <div class="team-story-points__points"  data-cy="points">
+                      <div class="team-story-points__adminwaiting">
+                        <div class="team-story-points__label">Done</div>
+                        <img src="/assets/tick.svg" alt="Done" class="team-story-points__icon" width="64px" height="64px" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <template id="teamStoryPointsTemplate">
+                  <div class="team-story-points__entry">
+                    <div class="team-story-points__name" data-cy="name"></div>
+                    <div class="team-story-points__points"  data-cy="points">
+                      <div class="team-story-points__userwaiting">
+                        <div class="team-story-points__label">Waiting</div>
+                        <img src="/assets/loading.gif" alt="Waiting" class="team-story-points__icon" width="20px" height="20px" />
+                      </div>
+                      <div class="team-story-points__adminwaiting">
+                        <div class="team-story-points__label">Done</div>
+                        <img src="/assets/tick.svg" alt="Done" class="team-story-points__icon" width="64px" height="64px" />
+                      </div>
+                    </div>
+                  </div>
+                </template>
+              </div>
             </section>
         </div>
     </main>
