@@ -5,6 +5,10 @@
   padding: 15px;
 }
 
+.site__brand a {
+  color: inherit;
+}
+
 .site__body {
   display: flex;
   flex: 1 0 auto;
