@@ -9,12 +9,13 @@ import './component/share-link'
 import './component/dialog'
 
 import authDialog from './features/auth-dialog'
+import roomDialog from './features/room-dialog'
 
 async function main () {
   AlertService.init()
   AlertService.announce('Application is ready to use')
 
-  authDialog.show()
+  roomDialog.show()
 }
 
 main()
