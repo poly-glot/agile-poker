@@ -5,7 +5,7 @@ jest.mock('../../component/alert/alert')
 
 jest.mock('../database', () => {
   return {
-    login: jest.fn()
+    signIn: jest.fn()
   }
 })
 
@@ -119,10 +119,10 @@ describe('Auth Dialog test', () => {
           })
 
           it(`Informed application about login request ${dispatchEventTimed} times`, () => {
-            expect(database.login).toHaveBeenCalledTimes(dispatchEventTimed)
+            expect(database.signIn).toHaveBeenCalledTimes(dispatchEventTimed)
 
             if (dispatchEventTimed > 0) {
-              expect(database.login).toHaveBeenCalledWith(username)
+              expect(database.signIn).toHaveBeenCalledWith(username)
             }
           })
         }

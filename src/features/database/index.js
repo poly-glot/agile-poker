@@ -20,7 +20,7 @@ export class RealtimeDatabase {
     })
   }
 
-  login (username) {
+  signIn (username) {
     return new Promise((resolve, reject) => {
       (async () => {
         const loginFunction = this.functions.httpsCallable('login')
@@ -35,6 +35,10 @@ export class RealtimeDatabase {
         }
       })()
     })
+  }
+
+  async signOut () {
+    await firebase.auth().signOut()
   }
 }
 

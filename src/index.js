@@ -3,6 +3,8 @@
 import AlertService from './component/alert/alert'
 import RealtimeDatabase from './features/database'
 
+import './features/toolbar'
+
 import './component/core-css'
 import './component/poker-cards'
 import './component/team-story-points'

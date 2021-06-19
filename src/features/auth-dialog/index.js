@@ -66,7 +66,7 @@ export class AuthDialog {
     }
 
     try {
-      await database.login(value)
+      await database.signIn(value)
       AlertService.announce('You are logged in')
     } catch (err) {
       this.setError(err.toString())
