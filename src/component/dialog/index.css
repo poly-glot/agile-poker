@@ -1,0 +1,66 @@
+dialog {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: rgba(1, 1, 1, 0.25) 0 0 6px;
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+  min-height: 300px;
+  padding: 0;
+  width: 100%;
+}
+
+dialog::backdrop {
+  backdrop-filter: blur(3px);
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.dialog__header {
+  display: flex;
+  justify-content: space-between;
+  margin: 15px;
+}
+
+.dialog__close {
+  box-sizing: content-box;
+  color: #000;
+  height: 25px;
+  min-width: 25px;
+  padding: 5px;
+  width: 25px;
+}
+
+.dialog__close:hover,
+.dialog__close:focus {
+  background-color: transparent;
+}
+
+.dialog__content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  margin: 15px;
+}
+
+.dialog__instructions {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+dialog[style] {
+  left: 50%;
+  margin: 0;
+  position: fixed;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
+/* polyfill */
+dialog + .backdrop {
+  backdrop-filter: blur(3px);
+  background-color: rgba(0, 0, 0, 0.5);
+  inset: 0;
+  position: fixed;
+}

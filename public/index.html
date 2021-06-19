@@ -158,5 +158,35 @@
         <p>Usual copyright notice</p>
     </footer>
 
+    <template id="dialogs">
+      <dialog class="dialog" id="authDialog">
+        <header class="dialog__header">
+          <h1 class="no-margin">Agile Poker</h1>
+        </header>
+        <form class="form dialog__content start-session__form">
+          <div class="dialog__instructions">
+            <div class="form__entry">
+              <label class="form__label" for="username">What shall we call you?</label>
+              <input class="form__input" id="username" name="username" data-cy="username" type="text">
+              <div class="form__error" role="alert"></div>
+            </div>
+            <div class="form__legal">
+              * We temporarily store your name and automatically generated a secret token in local storage on your machine. We destroy
+              locally stored information when you are signed out of the site. We hold your name and story points for 24
+              hours in a Google Cloud database hosted in Belgium. We are not using any analytics or Ad service. We do not
+              share your information with any third party.
+
+              <div class="form__error" id="localstorageRequired">
+                <b>Local storage is required for application to work.</b>
+              </div>
+            </div>
+          </div>
+          <div class="dialog__submit">
+            <button type="submit"  data-cy="submit">LOGIN</button>
+          </div>
+        </form>
+      </dialog>
+    </template>
+
 </body>
 </html>
