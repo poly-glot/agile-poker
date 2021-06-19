@@ -1,6 +1,13 @@
 import { AuthDialog } from './index'
+import database from '../database'
 
 jest.mock('../../component/alert/alert')
+
+jest.mock('../database', () => {
+  return {
+    login: jest.fn()
+  }
+})
 
 jest.mock('dialog-polyfill', () => ({
   registerDialog: (elem) => {
@@ -109,6 +116,14 @@ describe('Auth Dialog test', () => {
 
           it(`Show display error message "${expectedError}"`, () => {
             expect(error.innerHTML).toEqual(expectedError)
+          })
+
+          it(`Informed application about login request ${dispatchEventTimed} times`, () => {
+            expect(database.login).toHaveBeenCalledTimes(dispatchEventTimed)
+
+            if (dispatchEventTimed > 0) {
+              expect(database.login).toHaveBeenCalledWith(username)
+            }
           })
         }
       )

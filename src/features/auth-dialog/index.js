@@ -1,4 +1,5 @@
 import dialogPolyfill from 'dialog-polyfill'
+import database from '../database'
 import AlertService from '../../component/alert/alert'
 
 /**
@@ -64,6 +65,12 @@ export class AuthDialog {
       return
     }
 
+    try {
+      await database.login(value)
+      AlertService.announce('You are logged in')
+    } catch (err) {
+      this.setError(err.toString())
+    }
   }
 
   setError (errorMsg) {

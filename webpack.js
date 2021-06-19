@@ -51,7 +51,12 @@ module.exports = {
     contentBase: path.join(__dirname, 'public'),
     compress: true,
     open: true,
-    hot: true
+    hot: true,
+    proxy: {
+      "/__": {
+        "target": "http://localhost:5000"
+      }
+    },
   },
   target: 'web',
   module: {
