@@ -1,6 +1,7 @@
 import * as firebase from 'firebase'
 import paramsManager from './params'
 import authDialog from '../auth-dialog'
+import storyPointScreen from '../story-point-screen'
 
 export class RealtimeDatabase {
   constructor (params = paramsManager) {
@@ -8,6 +9,15 @@ export class RealtimeDatabase {
 
     /** @type {firebase.functions.Functions} */
     this.functions = firebase.functions()
+
+    /** @type {firebase.database.Database} */
+    this.database = firebase.database()
+
+    /** @type {firebase.database.Reference} */
+    this.roomRef = null
+
+    /** @type {firebase.database.Reference} */
+    this.storyPointRef = null
   }
 
   async init () {
@@ -17,6 +27,10 @@ export class RealtimeDatabase {
   onUserStateChange () {
     firebase.auth().onAuthStateChanged(async (user) => {
       authDialog.toggleVisibilityBasedOnAuth(user)
+      await storyPointScreen.resumeJourney(user)
+
+      //@TODO - wire this code after room admin logic
+      this.storyPointRef = this.database.ref(`20210620/CA761233-ED42-11CE-BACD-00AA0057B124/${user.uid}`)
     })
   }
 
@@ -39,6 +53,10 @@ export class RealtimeDatabase {
 
   async signOut () {
     await firebase.auth().signOut()
+  }
+
+  async submitStoryPoints (points) {
+    await this.storyPointRef.set(points)
   }
 }
 
