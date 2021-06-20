@@ -58,6 +58,23 @@ export class RealtimeDatabase {
   async submitStoryPoints (points) {
     await this.storyPointRef.set(points)
   }
+
+  createRoom () {
+    return new Promise((resolve, reject) => {
+      (async () => {
+        const loginFunction = this.functions.httpsCallable('createRoom')
+
+        try {
+          const { data: { token, uid, roomId } } = await loginFunction()
+          const { user } = await firebase.auth().signInWithCustomToken(token)
+          await user.updateProfile({ displayName: uid })
+          resolve(roomId)
+        } catch (err) {
+          reject(err.message)
+        }
+      })()
+    })
+  }
 }
 
 export default new RealtimeDatabase()

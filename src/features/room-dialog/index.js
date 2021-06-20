@@ -1,4 +1,5 @@
 import dialogPolyfill from 'dialog-polyfill'
+import database from '../database'
 
 export class RoomDialog {
   show = () => {
@@ -40,7 +41,7 @@ export class RoomDialog {
     submit.disabled = true
 
     try {
-      const roomId = 'xyz'
+      const roomId = await database.createRoom()
       this.redirectToRoom(roomId)
 
       this.hide()
