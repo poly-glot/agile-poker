@@ -1,6 +1,19 @@
 {
   "rules": {
     ".read": false,
-    ".write": false
+    ".write": false,
+    "storyPoints": {
+      "$yearMonthDay": {
+        ".validate": "$yearMonthDay.matches(/^(20)[0-9][0-9][01][0-9][0123][1-9]/)",
+        "$uniqueRoom": {
+          ".validate": "$uniqueRoom.matches(/[\\w]{8}(-[\\w]{4}){3}-[\\w]{12}/)",
+          ".read": true,
+          "$name": {
+            ".validate": "newData.isNumber()",
+            ".write": "auth != null && ((auth.uid == $name) || ($name == 'revealPoints' && auth.token.roomAdmin == $uniqueRoom) || (newData.val() == -1 && auth.token.roomAdmin == $uniqueRoom))"
+          }
+        }
+      }
+    }
   }
 }

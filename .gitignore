@@ -8,3 +8,4 @@ cypress/screenshots/
 .tmp/
 .now
 *-debug.log
+database-coverage.html
