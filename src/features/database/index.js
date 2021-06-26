@@ -2,6 +2,7 @@ import * as firebase from 'firebase'
 import paramsManager from './params'
 import authDialog from '../auth-dialog'
 import storyPointScreen from '../story-point-screen'
+import { StoryPoints } from '../../component/team-story-points'
 
 export class RealtimeDatabase {
   constructor (params = paramsManager) {
@@ -28,9 +29,6 @@ export class RealtimeDatabase {
     firebase.auth().onAuthStateChanged(async (user) => {
       authDialog.toggleVisibilityBasedOnAuth(user)
       await storyPointScreen.resumeJourney(user)
-
-      //@TODO - wire this code after room admin logic
-      this.storyPointRef = this.database.ref(`20210620/CA761233-ED42-11CE-BACD-00AA0057B124/${user.uid}`)
     })
   }
 
@@ -73,6 +71,62 @@ export class RealtimeDatabase {
           reject(err.message)
         }
       })()
+    })
+  }
+
+  async signIntoRoom (roomId, uid) {
+    const today = new Date()
+    const year = today.getUTCFullYear()
+    const month = today.getUTCMonth() + 1
+    const day = today.getUTCDate()
+
+    const yearMonthDay = year + (month < 10 ? '0' + month : month) + (day < 10 ? '0' + day : day)
+
+    this.roomKey = `storyPoints/${yearMonthDay}/${roomId}`
+    this.roomRef = this.database.ref(this.roomKey)
+    this.storyPointRef = this.database.ref(`${this.roomKey}/${uid}`)
+
+    const hasPointed = await this.storyPointRef.get()
+    if (!hasPointed.exists()) {
+      await this.submitStoryPoints(-1)
+    }
+  }
+
+  async resetStoryPoints () {
+    const snapshot = await this.roomRef.get()
+    const usernames = Object.keys(snapshot.val()).filter(n => n !== 'revealPoints')
+
+    const uniqueRandomNumber = Math.floor((Math.random() * (100 - 2) + 2)) * -1
+
+    const updates = {
+      [this.roomKey + '/revealPoints']: uniqueRandomNumber
+    }
+    usernames.forEach(username => {
+      updates[this.roomKey + '/' + username] = StoryPoints.NOT_POINTED_INT
+    })
+
+    await firebase.database().ref().update(updates)
+  }
+
+  async hideStoryPoints () {
+    await firebase.database().ref(this.roomKey + '/revealPoints').set(-1)
+  }
+
+  async revealStoryPoints () {
+    await firebase.database().ref(this.roomKey + '/revealPoints').set(1)
+  }
+
+  async onRoomReset (callback) {
+    if (!this.roomRef) {
+      throw new Error('You are not logged into room')
+    }
+
+    const ref = firebase.database().ref(this.roomKey + '/revealPoints')
+    ref.on('value', (snapshot) => {
+      const value = snapshot.val()
+      if (value < -1) {
+        callback()
+      }
     })
   }
 }

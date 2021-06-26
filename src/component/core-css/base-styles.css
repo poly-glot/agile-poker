@@ -63,6 +63,21 @@ button:active {
   padding: 0;
 }
 
+.button-secondary {
+  background: #f9f9f9;
+  border-color: #f9f9f9;
+  color: #000;
+  font-size: 1rem;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  margin-right: 40px;
+}
+
+.button-secondary:hover,
+.button-secondary:focus {
+  color: #fff;
+}
+
 .button-danger {
   background: #ac1b11;
   border-color: #ac1b11;

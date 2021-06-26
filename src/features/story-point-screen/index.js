@@ -4,6 +4,7 @@ import paramsManager from '../database/params'
 import roomDialog from '../room-dialog'
 import { TeamStoryPoints } from '../../component/team-story-points'
 import pokerCards from '../../component/poker-cards'
+import toolbar from '../toolbar'
 
 export class StoryPointScreen {
   constructor () {
@@ -35,7 +36,13 @@ export class StoryPointScreen {
     }
 
     if (paramsManager.hasRoomId()) {
+      await database.signIntoRoom(paramsManager.roomId, user.uid)
+      await database.onRoomReset(this.onRoomReset)
       pokerCards.onUserPointed(this.onUserPointHandler)
+
+      if (claims.roomAdmin === paramsManager.roomId) {
+        toolbar.enableAdminControls()
+      }
 
       this.enableStoryPoints()
     }
@@ -57,6 +64,17 @@ export class StoryPointScreen {
   onUserPointHandler = async (newPoint) => {
     await database.submitStoryPoints(newPoint)
     AlertService.announce(`Your ${newPoint} story points has been submitted`)
+  }
+
+  /***
+   * Callback when Room Admin reset the room
+   *
+   */
+  onRoomReset () {
+    const form = document.getElementById('story-points-form')
+    form.reset()
+
+    AlertService.announce('Story points are reset by admin')
   }
 }
 
