@@ -1,3 +1,4 @@
+import debounce from 'lodash.debounce'
 import * as firebase from 'firebase'
 import paramsManager from './params'
 import authDialog from '../auth-dialog'
@@ -127,6 +128,38 @@ export class RealtimeDatabase {
       if (value < -1) {
         callback()
       }
+    })
+  }
+
+  async listenRoomChanges (onRoomChanges = () => {}) {
+    if (!this.roomRef) {
+      throw new Error('You are not logged into room')
+    }
+
+    const state = new Map()
+
+    const notifyChanges = debounce(() => {
+      const stateArr = []
+      state.forEach((points, name) => {
+        stateArr.push({ points, name })
+      })
+
+      onRoomChanges(stateArr)
+    }, 200)
+
+    this.roomRef.on('child_removed', (snapshot) => {
+      state.delete(snapshot.key)
+      notifyChanges()
+    })
+
+    this.roomRef.on('child_changed', (snapshot) => {
+      state.set(snapshot.key, snapshot.val())
+      notifyChanges()
+    })
+
+    this.roomRef.on('child_added', (snapshot, prevChildKey) => {
+      state.set(snapshot.key, snapshot.val())
+      notifyChanges()
     })
   }
 }
