@@ -1,4 +1,4 @@
 {
-  "defaultCommandTimeout": 60000,
+  "defaultCommandTimeout": 6000,
   "projectId": "coqb3r"
 }
