@@ -14,7 +14,8 @@ module.exports = {
     Cypress: true,
     authedApp: true,
     adminApp: true,
-    firebase: true
+    firebase: true,
+    firebaseEmulators: true
   },
   parser: "@babel/eslint-parser",
   parserOptions: {

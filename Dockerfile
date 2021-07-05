@@ -1,6 +1,5 @@
 # Sample docker file to investigate why Cypress is failing on github actions
 # build: docker build . -t cypress-investigation
-# run: docker run --rm -p 5000:5000 -p 9099:9099 -p 5001:5001 -p 9001:9001 -p 4000:4000 -v ~/Desktop/cypress:/cypress/videos cypress-investigation
 FROM cypress/browsers:node12.13.0-chrome78-ff70
 
 ENV LANG='en_GB.UTF-8' LANGUAGE='en_GB:en' LC_ALL='en_GB.UTF-8'
@@ -74,7 +73,5 @@ RUN npm install firebase firebase-admin @percy/cli @percy/cypress
 EXPOSE 5000 9099 5001 9001 4000
 
 VOLUME ["/cypress/videos"]
-
-ENV FIREBASE_TOKEN="1//03gDfQxcLGNpsCgYIARAAGAMSNwF-L9IrmbPQGAU8cpZCPb8U722Mfz6kRP3_iq1PXp6263vUsMuuNEnJ1umvDeQF6LPqjPWz2dI"
 
 CMD ["firebase", "emulators:exec", "cypress run"]

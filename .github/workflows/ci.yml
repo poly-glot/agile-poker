@@ -66,3 +66,15 @@ jobs:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+
+      - name: 'Change Firebase configuration to live'
+        run: |
+          PACKAGE_VERSION=$(node -pe "require('./package.json').version")
+          sed -r -i 's/(\{\{build_no\}\})/'"$PACKAGE_VERSION"'/' dist/index.html
+          sed -r -i 's/(\/firebase-init.js)/\/__\/firebase\/init.js/g' dist/index.html
+          rm -rf dist/firebase-init.js
+
+      - name: Upload Live
+        run: firebase deploy --force --token ${{ secrets.FIREBASE_TOKEN }}
+        id: firebase-production
+        if: ${{ github.ref == 'refs/heads/main' }}

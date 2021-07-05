@@ -26,6 +26,3 @@ npm start
 
 # Scalability Consideration
 - Solution can handle up to 200k concurrent connections on [Firebase Blaze Plan](https://firebase.google.com/pricing)
-
-# Legal Matters
-- [Google faces lawsuit over tracking in apps even when users opted out](https://www.reuters.com/article/us-alphabet-google-privacy-lawsuit-idUSKCN24F2N4)

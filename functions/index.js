@@ -7,6 +7,13 @@ admin.initializeApp();
 const validUsernamePattern = /^[a-z\d\-_\s]+$/i
 
 exports.login = functions.https.onCall(async (data, context) => {
+  // @TODO enable App Check when unit testing library add support
+  /* if (context.app === undefined) {
+    throw new functions.https.HttpsError(
+      'failed-precondition',
+      'The function must be called from an App Check verified app.')
+  }*/
+
   const { username } = data;
 
   if (!username || username.length > 32 || !validUsernamePattern.test(username)) {
@@ -25,6 +32,13 @@ exports.login = functions.https.onCall(async (data, context) => {
 });
 
 exports.createRoom = functions.https.onCall(async (data, context) => {
+  // @TODO enable App Check when unit testing library add support
+  /*if (context.app === undefined) {
+    throw new functions.https.HttpsError(
+      'failed-precondition',
+      'The function must be called from an App Check verified app.')
+  }*/
+
   const { uid } = context.auth
 
   if (!uid) {
