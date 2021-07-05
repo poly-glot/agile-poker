@@ -24,10 +24,10 @@ const plugins = [
   }),
 
   new CopyWebpackPlugin({
-    patterns: [{
-      from: path.resolve(__dirname, 'public', 'assets'),
-      to: path.resolve(__dirname, 'dist', 'assets')
-    }]
+    patterns: [
+      { from: path.resolve(__dirname, 'public', 'assets'),  to: path.resolve(__dirname, 'dist', 'assets') },
+      { from: path.resolve(__dirname, 'public', 'firebase-init.js'),  to: path.resolve(__dirname, 'dist', 'firebase-init.js') },
+    ]
   })
 ]
 

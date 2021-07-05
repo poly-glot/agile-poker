@@ -11,7 +11,10 @@ module.exports = {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly',
     cy: true,
-    Cypress: true
+    Cypress: true,
+    authedApp: true,
+    adminApp: true,
+    firebase: true
   },
   parser: "@babel/eslint-parser",
   parserOptions: {
