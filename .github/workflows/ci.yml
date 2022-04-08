@@ -67,6 +67,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
 
+      - name: 'Build For Production'
+        run: npm run build
+        env:
+          DISABLE_FIREBASE_EMULATORS: true
+
       - name: 'Change Firebase configuration to live'
         run: |
           PACKAGE_VERSION=$(node -pe "require('./package.json').version")

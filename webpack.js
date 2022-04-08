@@ -7,6 +7,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const PreloadWebpackPlugin = require('@vue/preload-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const TerserPlugin = require('terser-webpack-plugin')
+const { DefinePlugin } = require('webpack')
 
 const plugins = [
   new CleanWebpackPlugin({}),
@@ -28,6 +29,10 @@ const plugins = [
     patterns: [
       { from: path.resolve(__dirname, 'public', 'assets'), to: path.resolve(__dirname, 'dist', 'assets') },
     ]
+  }),
+
+  new DefinePlugin({
+    'process.env.DISABLE_FIREBASE_EMULATORS': process.env.DISABLE_FIREBASE_EMULATORS ?? false
   })
 ]
 
