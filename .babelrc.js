@@ -1,8 +1,10 @@
 module.exports = {
-    presets: ["@babel/preset-env"],
-    plugins: [
-        '@babel/plugin-proposal-object-rest-spread',
-        '@babel/plugin-syntax-dynamic-import',
-        '@babel/plugin-proposal-class-properties',
+  'presets': [
+    [
+      '@babel/preset-env', {
+        'modules': process.env.NODE_ENV === 'test' ? 'auto' : false
+      }
     ]
+  ],
+  plugins: []
 }

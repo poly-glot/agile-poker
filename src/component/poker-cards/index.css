@@ -76,5 +76,5 @@
 }
 
 .poker-card__input:focus-visible ~ .poker-card__label::after {
-  border: 4px solid rgba(255, 255, 255, 0.5);
+  border: 4px solid rgb(255 255 255 / 50%);
 }

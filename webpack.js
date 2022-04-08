@@ -1,11 +1,12 @@
-const path = require("path");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const PreloadWebpackPlugin = require('@vue/preload-webpack-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const path = require('path')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const PreloadWebpackPlugin = require('@vue/preload-webpack-plugin')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const TerserPlugin = require('terser-webpack-plugin')
 
 const plugins = [
   new CleanWebpackPlugin({}),
@@ -25,8 +26,7 @@ const plugins = [
 
   new CopyWebpackPlugin({
     patterns: [
-      { from: path.resolve(__dirname, 'public', 'assets'),  to: path.resolve(__dirname, 'dist', 'assets') },
-      { from: path.resolve(__dirname, 'public', 'firebase-init.js'),  to: path.resolve(__dirname, 'dist', 'firebase-init.js') },
+      { from: path.resolve(__dirname, 'public', 'assets'), to: path.resolve(__dirname, 'dist', 'assets') },
     ]
   })
 ]
@@ -36,27 +36,25 @@ if (process.env.BUNDLE_ANALYZE) {
 }
 
 module.exports = {
-  mode: "development",
   entry: {
-    main: "./src/index.js",
+    main: './src/index.js'
   },
   output: {
-    filename: "[name].[contenthash].js",
-    path: path.resolve(__dirname, "dist")
+    filename: '[name].[contenthash].js',
+    path: path.resolve(__dirname, 'dist')
   },
   devServer: {
     historyApiFallback: true,
-    disableHostCheck: true,
-    stats: "minimal",
-    contentBase: path.join(__dirname, 'public'),
+    allowedHosts: 'all',
+    static: path.join(__dirname, 'public'),
     compress: true,
     open: true,
     hot: true,
     proxy: {
-      "/__": {
-        "target": "http://localhost:5000"
+      '/__': {
+        target: 'http://localhost:5002'
       }
-    },
+    }
   },
   target: 'web',
   module: {
@@ -66,7 +64,7 @@ module.exports = {
         exclude: /(node_modules|bower_components)/,
         use: {
           loader: 'babel-loader',
-          options: require("./.babelrc")
+          options: require('./.babelrc')
         }
       },
       {
@@ -82,12 +80,16 @@ module.exports = {
     ]
   },
   optimization: {
+    minimize: true,
     minimizer: [
       new CssMinimizerPlugin(),
-    ],
+      new TerserPlugin()
+    ]
   },
-  externals: {
-    firebase: 'firebase',
+  performance: {
+    hints: false,
+    maxEntrypointSize: 272000,
+    maxAssetSize: 272000
   },
   plugins
-};
+}

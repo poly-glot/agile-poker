@@ -1,4 +1,5 @@
 /* istanbul ignore file */
+import './firebase-init'
 
 import AlertService from './component/alert/alert'
 import RealtimeDatabase from './features/database'
