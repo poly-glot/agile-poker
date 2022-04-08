@@ -1,5 +1,5 @@
 .team-story-points {
-  background: rgba(194, 194, 194, 0.1);
+  background: rgb(194 194 194 / 10%);
   padding: 30px 35px 30px 30px;
   width: 100%;
 }
@@ -15,7 +15,7 @@
 
 .team-story-points__points {
   align-items: center;
-  border: 1px solid rgba(0, 0, 0, 0.3);
+  border: 1px solid rgb(0 0 0 / 30%);
   border-radius: 50%;
   display: flex;
   font-weight: bold;

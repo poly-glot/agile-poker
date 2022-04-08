@@ -1,9 +1,21 @@
 :root {
   --main-bg-color: #fff;
   --main-color: #222;
-  --font: -apple-system, blinkmacsystemfont, "Segoe UI", roboto, "Helvetica Neue", arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font:
+    -apple-system,
+    blinkmacsystemfont,
+    "Segoe UI",
+    roboto,
+    "Helvetica Neue",
+    arial,
+    "Noto Sans",
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol",
+    "Noto Color Emoji";
   --brand: #01189b;
   --brand-highlight: #011271;
   --brand-text: #fff;
-  --borderColor: rgba(0, 0, 0, 0.15);
+  --borderColor: rgb(0 0 0 / 15%);
 }

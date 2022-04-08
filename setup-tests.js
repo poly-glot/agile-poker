@@ -1,7 +1,8 @@
 import fs from 'fs'
 import http from 'http'
 import path from 'path'
-import * as firebase from '@firebase/rules-unit-testing'
+import { initializeTestEnvironment } from '@firebase/rules-unit-testing'
+const { setLogLevel } = require('firebase/app')
 
 const DATABASE_NAME = 'agile-poker'
 const DATABASE_EMULATOR_HOST = 'localhost:9001'
@@ -9,9 +10,9 @@ const DATABASE_EMULATOR_HOST = 'localhost:9001'
 process.env.DATABASE_EMULATOR_HOST = DATABASE_EMULATOR_HOST
 
 const indexFile = path.resolve(path.join(__dirname, 'public', 'index.html'))
-const html = fs.readFileSync(indexFile, {encoding: 'utf8'})
+const html = fs.readFileSync(indexFile, { encoding: 'utf8' })
 
-const COVERAGE_URL = `http://${process.env.FIREBASE_DATABASE_EMULATOR_HOST}/.inspect/coverage?ns=${DATABASE_NAME}`;
+const COVERAGE_URL = `http://${DATABASE_EMULATOR_HOST}/emulator/v1/projects/${DATABASE_NAME}:ruleCoverage.html`
 
 /**
  * @typedef {Object} TokenOptions
@@ -25,44 +26,46 @@ const COVERAGE_URL = `http://${process.env.FIREBASE_DATABASE_EMULATOR_HOST}/.ins
  * @property {string} uid
  */
 
+/** @type RulesTestEnvironment */
+let testEnv
+
+beforeAll(async () => {
+  setLogLevel('error')
+
+  testEnv = await initializeTestEnvironment({
+    database: { rules: fs.readFileSync('database.rules.json', 'utf8') }
+  })
+})
+
 /**
  *
  * @param {TokenOptions} auth
  * @return {firebase.database.Database}
  */
 global.authedApp = (auth) => {
-  return firebase.initializeTestApp({
-    databaseName: DATABASE_NAME,
-    auth,
-  }).database();
+  if (!auth) {
+    return testEnv.unauthenticatedContext().database()
+  }
+
+  let { uid, ...token } = auth
+  uid = uid ?? 'user'
+  token = { ...token, sub: uid }
+
+  return testEnv.authenticatedContext(uid, token).database()
 }
 
-global.adminApp = () => {
-  return firebase.initializeAdminApp({ databaseName: DATABASE_NAME })
-    .database()
-}
-
-beforeEach(async () => {
+beforeEach(() => {
   document.documentElement.innerHTML = html.toString()
+})
 
-  await adminApp().ref().set(null)
-});
+afterEach(async () => {
+  await testEnv.clearDatabase()
 
-afterEach(() => {
   jest.clearAllMocks()
-});
-
-beforeAll(async () => {
-  // Set database rules before running these tests
-  const rules = fs.readFileSync("database.rules.json", "utf8")
-  await firebase.loadDatabaseRules({
-    databaseName: DATABASE_NAME,
-    rules: rules,
-  })
 })
 
 afterAll(async () => {
-  await Promise.all(firebase.apps().map((app) => app.delete()))
+  await testEnv.cleanup()
 
   // Write the coverage report to a file
   const coverageFile = 'database-coverage.html'
@@ -71,8 +74,8 @@ afterAll(async () => {
     http.get(COVERAGE_URL, (res) => {
       res.pipe(stream, { end: true })
 
-      res.on("end", resolve)
-      res.on("error", reject)
+      res.on('end', resolve)
+      res.on('error', reject)
     })
   })
 })

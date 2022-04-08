@@ -31,7 +31,7 @@ a:active {
 }
 
 a[aria-disabled] {
-  color: rgba(0, 0, 0, 0.5);
+  color: rgb(0 0 0 / 50%);
   pointer-events: none;
 }
 

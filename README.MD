@@ -9,9 +9,23 @@
 
 A serverless application built on Firebase Cloud to make agile team's story estimating efficient and fun.
 
+# System Requirements
+- [Java 11](https://sdkman.io/) `sdk install java 11.0.14-zulu`
+- [Nodejs 16+](https://nodejs.org/en/download/)
+- [Firebase CLI](https://firebase.google.com/docs/cli) `npm i -g firebase-tools`
+
 # Getting Started
+
+## Setup (One off)
 ```
 npm install
+cd functions
+npm install
+cd ..
+```
+
+## Start
+```
 npm start
 ```
 

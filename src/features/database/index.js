@@ -1,5 +1,9 @@
+import { getDatabase, ref, get, update, set, onValue, onChildAdded, onChildChanged, onChildRemoved } from 'firebase/database'
+import { getFunctions, httpsCallable } from 'firebase/functions'
+import { getAuth, onAuthStateChanged, signInWithCustomToken, updateProfile, signOut as firebaseSignOut } from 'firebase/auth'
+
 import debounce from 'lodash.debounce'
-import * as firebase from 'firebase'
+
 import paramsManager from './params'
 import authDialog from '../auth-dialog'
 import storyPointScreen from '../story-point-screen'
@@ -8,12 +12,6 @@ import { StoryPoints } from '../../component/team-story-points'
 export class RealtimeDatabase {
   constructor (params = paramsManager) {
     this.params = params
-
-    /** @type {firebase.functions.Functions} */
-    this.functions = firebase.functions()
-
-    /** @type {firebase.database.Database} */
-    this.database = firebase.database()
 
     /** @type {firebase.database.Reference} */
     this.roomRef = null
@@ -27,7 +25,8 @@ export class RealtimeDatabase {
   }
 
   onUserStateChange () {
-    firebase.auth().onAuthStateChanged(async (user) => {
+    const auth = getAuth()
+    onAuthStateChanged(auth, async (user) => {
       authDialog.toggleVisibilityBasedOnAuth(user)
       await storyPointScreen.resumeJourney(user)
     })
@@ -36,12 +35,14 @@ export class RealtimeDatabase {
   signIn (username) {
     return new Promise((resolve, reject) => {
       (async () => {
-        const loginFunction = this.functions.httpsCallable('login')
+        const functions = getFunctions()
+        const loginFunction = httpsCallable(functions, 'login')
 
         try {
+          const auth = getAuth()
           const { data: { token } } = await loginFunction({ username })
-          const { user } = await firebase.auth().signInWithCustomToken(token)
-          await user.updateProfile({ displayName: username })
+          signInWithCustomToken(auth, token)
+          await updateProfile(auth.currentUser, { displayName: username })
           resolve(true)
         } catch (err) {
           reject(err.message)
@@ -51,22 +52,25 @@ export class RealtimeDatabase {
   }
 
   async signOut () {
-    await firebase.auth().signOut()
+    const auth = getAuth()
+    await firebaseSignOut(auth)
   }
 
   async submitStoryPoints (points) {
-    await this.storyPointRef.set(points)
+    await set(this.storyPointRef, points)
   }
 
   createRoom () {
     return new Promise((resolve, reject) => {
       (async () => {
-        const loginFunction = this.functions.httpsCallable('createRoom')
+        const functions = getFunctions()
+        const loginFunction = httpsCallable(functions, 'createRoom')
 
         try {
+          const auth = getAuth()
           const { data: { token, uid, roomId } } = await loginFunction()
-          const { user } = await firebase.auth().signInWithCustomToken(token)
-          await user.updateProfile({ displayName: uid })
+          await signInWithCustomToken(auth, token)
+          await updateProfile(auth.currentUser, { displayName: uid })
           resolve(roomId)
         } catch (err) {
           reject(err.message)
@@ -82,19 +86,22 @@ export class RealtimeDatabase {
     const day = today.getUTCDate()
 
     const yearMonthDay = year + (month < 10 ? '0' + month : month) + (day < 10 ? '0' + day : day)
+    const db = getDatabase()
 
     this.roomKey = `storyPoints/${yearMonthDay}/${roomId}`
-    this.roomRef = this.database.ref(this.roomKey)
-    this.storyPointRef = this.database.ref(`${this.roomKey}/${uid}`)
+    this.roomRef = ref(db, this.roomKey)
+    this.storyPointRef = ref(db, `${this.roomKey}/${uid}`)
 
-    const hasPointed = await this.storyPointRef.get()
+    const hasPointed = await get(this.storyPointRef)
     if (!hasPointed.exists()) {
       await this.submitStoryPoints(-1)
     }
   }
 
   async resetStoryPoints () {
-    const snapshot = await this.roomRef.get()
+    const db = getDatabase()
+
+    const snapshot = await get(this.roomRef)
     const usernames = Object.keys(snapshot.val()).filter(n => n !== 'revealPoints')
 
     const uniqueRandomNumber = Math.floor((Math.random() * (100 - 2) + 2)) * -1
@@ -106,15 +113,17 @@ export class RealtimeDatabase {
       updates[this.roomKey + '/' + username] = StoryPoints.NOT_POINTED_INT
     })
 
-    await firebase.database().ref().update(updates)
+    await update(ref(db), updates)
   }
 
   async hideStoryPoints () {
-    await firebase.database().ref(this.roomKey + '/revealPoints').set(-1)
+    const db = getDatabase()
+    await set(ref(db, this.roomKey + '/revealPoints'), -1)
   }
 
   async revealStoryPoints () {
-    await firebase.database().ref(this.roomKey + '/revealPoints').set(1)
+    const db = getDatabase()
+    await set(ref(db, this.roomKey + '/revealPoints'), 1)
   }
 
   async onRoomReset (callback) {
@@ -122,8 +131,9 @@ export class RealtimeDatabase {
       throw new Error('You are not logged into room')
     }
 
-    const ref = firebase.database().ref(this.roomKey + '/revealPoints')
-    ref.on('value', (snapshot) => {
+    const db = getDatabase()
+    const pointRef = ref(db, this.roomKey + '/revealPoints')
+    onValue(pointRef, (snapshot) => {
       const value = snapshot.val()
       if (value < -1) {
         callback()
@@ -147,17 +157,17 @@ export class RealtimeDatabase {
       onRoomChanges(stateArr)
     }, 200)
 
-    this.roomRef.on('child_removed', (snapshot) => {
+    onChildRemoved(this.roomRef, (snapshot) => {
       state.delete(snapshot.key)
       notifyChanges()
     })
 
-    this.roomRef.on('child_changed', (snapshot) => {
+    onChildChanged(this.roomRef, (snapshot) => {
       state.set(snapshot.key, snapshot.val())
       notifyChanges()
     })
 
-    this.roomRef.on('child_added', (snapshot, prevChildKey) => {
+    onChildAdded(this.roomRef, (snapshot) => {
       state.set(snapshot.key, snapshot.val())
       notifyChanges()
     })

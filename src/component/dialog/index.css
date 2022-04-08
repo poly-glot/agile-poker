@@ -1,7 +1,7 @@
 dialog {
   background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: rgba(1, 1, 1, 0.25) 0 0 6px;
+  border: 1px solid rgb(0 0 0 / 10%);
+  box-shadow: rgb(1 1 1 / 25%) 0 0 6px;
   display: flex;
   flex-direction: column;
   max-width: 600px;
@@ -12,7 +12,7 @@ dialog {
 
 dialog::backdrop {
   backdrop-filter: blur(3px);
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgb(0 0 0 / 50%);
 }
 
 .dialog__header {
@@ -56,11 +56,10 @@ dialog[style] {
   transform: translate(-50%, -50%);
 }
 
-
 /* polyfill */
 dialog + .backdrop {
   backdrop-filter: blur(3px);
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgb(0 0 0 / 50%);
   inset: 0;
   position: fixed;
 }
