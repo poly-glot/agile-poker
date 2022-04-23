@@ -4,7 +4,6 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const PreloadWebpackPlugin = require('@vue/preload-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const TerserPlugin = require('terser-webpack-plugin')
 const { DefinePlugin } = require('webpack')
@@ -18,11 +17,6 @@ const plugins = [
 
   new HtmlWebpackPlugin({
     template: 'public/index.html'
-  }),
-
-  new PreloadWebpackPlugin({
-    rel: 'preload',
-    include: 'all'
   }),
 
   new CopyWebpackPlugin({

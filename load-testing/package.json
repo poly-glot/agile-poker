@@ -1,0 +1,37 @@
+{
+  "name": "cos-testing",
+  "version": "1.0.0",
+  "description": "Flood Element test script",
+  "private": true,
+  "scripts": {
+    "start": "npx element run ./src/main.perf.ts --no-headless",
+    "pretty": "npx prettier --write src/**"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "all",
+    "printWidth": 100,
+    "useTabs": true,
+    "tabWidth": 2,
+    "bracketSpacing": true,
+    "jsxBracketSameLine": true,
+    "arrowParens": "avoid"
+  },
+  "dependencies": {
+    "@flood/element": "2.0.4",
+    "@flood/element-cli": "2.0.4",
+    "assert": "2.0.0",
+    "faker": "^4.1.0",
+    "prettier": "^2.5.1"
+  },
+  "devDependencies": {
+    "@types/assert": "*",
+    "@types/faker": "^4.1.0"
+  },
+  "element": {
+    "testMatch": [
+      "**/*.perf.[tj]s"
+    ]
+  }
+}
