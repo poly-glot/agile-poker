@@ -7,7 +7,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/e9ab18c4667689e347de/maintainability)](https://codeclimate.com/github/poly-glot/agile-poker/maintainability)
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/poly-glot/agile-poker)
 
-A serverless application built on Firebase Cloud to make agile team's story estimating efficient and fun.
+Creating the Agile team's story estimating session as efficient and fun as possible with a serverless application built on Firebase Cloud.
 
 # System Requirements
 - [Java 11](https://sdkman.io/) `sdk install java 11.0.14-zulu`
@@ -40,3 +40,4 @@ npm start
 
 # Scalability Consideration
 - Solution can handle up to 200k concurrent connections on [Firebase Blaze Plan](https://firebase.google.com/pricing)
+- [Tested with 1000+ Realtime users making 40k requests using flood.io](https://app.flood.io/28CLJ92Tg10MkW9bWbxtwV4TiDG)
