@@ -36,10 +36,10 @@ exports.login = onCall(
 exports.createRoom = onCall(
   { enforceAppCheck: !isEmulator },
   async (request) => {
-    const { uid } = request.auth
+    const uid = request.auth?.uid
 
     if (!uid) {
-      throw new HttpsError('failed-precondition', 'You are not logged in')
+      throw new HttpsError('unauthenticated', 'You are not logged in')
     }
 
     const roomAdmin = uuid()

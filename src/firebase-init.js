@@ -55,10 +55,14 @@ if (!isEmulatorMode || testAppCheckLocally) {
     }
   }
 
-  initializeAppCheck(app, {
-    provider: new ReCaptchaV3Provider('6LdDSVofAAAAAOCVXxuoWUdAcjrTC1Oey4P_4j5d'),
-    isTokenAutoRefreshEnabled: true
-  })
+  try {
+    initializeAppCheck(app, {
+      provider: new ReCaptchaV3Provider('6LdDSVofAAAAAOCVXxuoWUdAcjrTC1Oey4P_4j5d'),
+      isTokenAutoRefreshEnabled: true
+    })
+  } catch (error) {
+    console.error('App Check initialization failed:', error)
+  }
 }
 
 // Don't connect to emulators when testing App Check (needs real Firebase services)
