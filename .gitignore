@@ -9,3 +9,4 @@ cypress/screenshots/
 .now
 *-debug.log
 database-coverage.html
+bundle-stats.html

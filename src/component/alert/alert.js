@@ -4,7 +4,7 @@ export class Alert {
   }
 
   announce (text) {
-    this._elem.innerHTML = text
+    this._elem.textContent = text
   }
 }
 

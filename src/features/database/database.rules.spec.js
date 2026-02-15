@@ -1,11 +1,12 @@
-const firebase = require('@firebase/rules-unit-testing')
+import { describe, it, beforeEach } from 'vitest'
+import * as firebase from '@firebase/rules-unit-testing'
 
 describe('Firebase Database Testing', () => {
   describe('Anonymous users', () => {
     let db
 
     beforeEach(() => {
-      db = authedApp(null)
+      db = globalThis.authedApp(null)
     })
 
     it('Disallow all Read actions', async () => {
@@ -27,7 +28,7 @@ describe('Firebase Database Testing', () => {
     let db
 
     beforeEach(() => {
-      db = authedApp({ uid: 'Junaid A' })
+      db = globalThis.authedApp({ uid: 'Junaid A' })
     })
 
     describe('Allowed action', () => {
@@ -68,7 +69,7 @@ describe('Firebase Database Testing', () => {
     let db
 
     beforeEach(() => {
-      db = authedApp({ uid: 'Junaid A' })
+      db = globalThis.authedApp({ uid: 'Junaid A' })
     })
 
     describe('Ensure $yearMonth is respected as YYYYMD', () => {
@@ -94,8 +95,31 @@ describe('Firebase Database Testing', () => {
 
       it('Succeeded when it matches the pattern', async () => {
         await firebase.assertSucceeds(db.ref('storyPoints/20210601/CA761233-ED42-11CE-BACD-00AA0057B124/Junaid A').set(1))
-        await firebase.assertSucceeds(db.ref('storyPoints/20210631/CA761233-ED42-11CE-BACD-00AA0057B124/Junaid A').set(1))
         await firebase.assertSucceeds(db.ref('storyPoints/20211231/CA761233-ED42-11CE-BACD-00AA0057B124/Junaid A').set(1))
+      })
+    })
+
+    describe('Ensure $yearMonthDay validates date format', () => {
+      it('Fails for invalid month 13', async () => {
+        await firebase.assertFails(db.ref('storyPoints/20211301/CA761233-ED42-11CE-BACD-00AA0057B124/Junaid A').set(1))
+      })
+
+      it('Fails for day 00', async () => {
+        await firebase.assertFails(db.ref('storyPoints/20210600/CA761233-ED42-11CE-BACD-00AA0057B124/Junaid A').set(1))
+      })
+
+      it('Fails for month 00', async () => {
+        await firebase.assertFails(db.ref('storyPoints/20210001/CA761233-ED42-11CE-BACD-00AA0057B124/Junaid A').set(1))
+      })
+
+      it('Fails for day 32', async () => {
+        await firebase.assertFails(db.ref('storyPoints/20210132/CA761233-ED42-11CE-BACD-00AA0057B124/Junaid A').set(1))
+      })
+
+      it('Succeeds for valid date format (day 31 is allowed by regex)', async () => {
+        // Note: Firebase rules regex cannot validate calendar logic (e.g., June has 30 days)
+        // The cleanup function handles data regardless of exact day validity
+        await firebase.assertSucceeds(db.ref('storyPoints/20210131/CA761233-ED42-11CE-BACD-00AA0057B124/Junaid A').set(1))
       })
     })
   })
@@ -104,7 +128,7 @@ describe('Firebase Database Testing', () => {
     let db
 
     beforeEach(() => {
-      db = authedApp({ uid: 'Junaid A', roomAdmin: 'CA761233-ED42-11CE-BACD-00AA0057B124' })
+      db = globalThis.authedApp({ uid: 'Junaid A', roomAdmin: 'CA761233-ED42-11CE-BACD-00AA0057B124' })
     })
 
     it('As a room admin should be able to trigger reveal points', async () => {
