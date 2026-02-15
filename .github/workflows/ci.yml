@@ -68,7 +68,12 @@ jobs:
           sed -r -i 's/(\/firebase-init.js)/\/__\/firebase\/init.js/g' dist/index.html
           rm -rf dist/firebase-init.js
 
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+
       - name: Upload Live
-        run: firebase deploy --force --token ${{ secrets.FIREBASE_TOKEN }}
+        run: firebase deploy --force
         id: firebase-production
         if: ${{ github.ref == 'refs/heads/main' }}
