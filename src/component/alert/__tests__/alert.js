@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach } from 'vitest'
 import AlertService from '../alert'
 
 describe('AlertService test', () => {

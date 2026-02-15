@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach } from 'vitest'
 import { isPointed, isPointReveal, sortListByHighestStoryPoints, groupByStoryPoints } from './utils'
 
 describe('utils.isPointed()', () => {
@@ -91,21 +92,21 @@ describe('utils.groupByStoryPoints()', () => {
   it('Should group Array list by story points', () => {
     expect(groupByStoryPoints(members)).toMatchInlineSnapshot(`
 Map {
-  11 => Array [
+  11 => [
     "Oliver",
   ],
-  5 => Array [
+  5 => [
     "George",
     "Harry",
   ],
-  3 => Array [
+  3 => [
     "Ali",
   ],
-  -1 => Array [
+  -1 => [
     "Jack",
     "Oscar",
   ],
-  -2 => Array [
+  -2 => [
     "Kate",
     "Steph",
   ],

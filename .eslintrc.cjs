@@ -1,7 +1,7 @@
 module.exports = {
   env: {
     browser: true,
-    es6: true,
+    es2022: true,
     jest: true
   },
   extends: [
@@ -17,14 +17,10 @@ module.exports = {
     firebase: true,
     firebaseEmulators: true
   },
-  parser: "@babel/eslint-parser",
   parserOptions: {
-    ecmaVersion: 2018,
+    ecmaVersion: 2022,
     sourceType: 'module'
   },
-  plugins: [
-    "@babel"
-  ],
   rules: {
     'max-len': ["error", { "code": 180 }]
   }

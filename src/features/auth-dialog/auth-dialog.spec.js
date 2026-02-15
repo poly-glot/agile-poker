@@ -1,17 +1,23 @@
+import { vi, describe, it, expect, beforeEach } from 'vitest'
 import { AuthDialog } from './index'
 import database from '../database'
 
-jest.mock('../../component/alert/alert')
+vi.mock('../../component/alert/alert')
 
-jest.mock('../database', () => {
+vi.mock('../database', () => {
   return {
-    signIn: jest.fn()
+    default: {
+      signIn: vi.fn()
+    },
+    signIn: vi.fn()
   }
 })
 
-jest.mock('dialog-polyfill', () => ({
-  registerDialog: (elem) => {
-    elem.showModal = jest.fn()
+vi.mock('dialog-polyfill', () => ({
+  default: {
+    registerDialog: (elem) => {
+      elem.showModal = vi.fn()
+    }
   }
 }))
 
@@ -28,7 +34,7 @@ describe('Auth Dialog test', () => {
       let spyLocalStorage
 
       beforeEach(() => {
-        spyLocalStorage = jest.spyOn(window, 'localStorage', 'get')
+        spyLocalStorage = vi.spyOn(window, 'localStorage', 'get')
       })
 
       describe('AND localStorage is available', () => {

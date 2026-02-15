@@ -2,12 +2,46 @@
   "database": {
     "rules": "database.rules.json"
   },
+  "functions": {
+    "source": "functions"
+  },
   "hosting": {
     "public": "dist",
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
+    ],
+    "headers": [
+      {
+        "source": "**",
+        "headers": [
+          {
+            "key": "X-Content-Type-Options",
+            "value": "nosniff"
+          },
+          {
+            "key": "X-Frame-Options",
+            "value": "DENY"
+          },
+          {
+            "key": "X-XSS-Protection",
+            "value": "1; mode=block"
+          },
+          {
+            "key": "Referrer-Policy",
+            "value": "strict-origin-when-cross-origin"
+          },
+          {
+            "key": "Permissions-Policy",
+            "value": "geolocation=(), microphone=(), camera=()"
+          },
+          {
+            "key": "Content-Security-Policy",
+            "value": "default-src 'self' https://agile.junaid.guru; script-src 'self' https://agile.junaid.guru https://www.gstatic.com https://www.google.com https://*.firebasedatabase.app; style-src 'self' https://agile.junaid.guru 'unsafe-inline'; img-src 'self' https://agile.junaid.guru data: https:; connect-src 'self' https://agile.junaid.guru https://*.firebaseio.com https://*.firebasedatabase.app https://*.googleapis.com https://*.cloudfunctions.net wss://*.firebaseio.com wss://*.firebasedatabase.app; frame-src https://www.google.com; font-src 'self' https://agile.junaid.guru data:; object-src 'none'; base-uri 'self' https://agile.junaid.guru; form-action 'self' https://agile.junaid.guru; frame-ancestors 'none'"
+          }
+        ]
+      }
     ],
     "rewrites": [
       {
@@ -37,6 +71,7 @@
       "enabled": true,
       "port": 4000,
       "host": "0.0.0.0"
-    }
+    },
+    "singleProjectMode": true
   }
 }
