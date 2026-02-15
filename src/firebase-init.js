@@ -85,7 +85,7 @@ if (isEmulatorMode && !testAppCheckLocally) {
 
   const auth = getAuth()
   const db = getDatabase()
-  const functions = getFunctions(getApp())
+  const functions = getFunctions(getApp(), 'europe-west1')
 
   connectAuthEmulator(auth, `http://${firebaseEmulators.auth.host}:${firebaseEmulators.auth.port}`)
   connectDatabaseEmulator(db, firebaseEmulators.database.host, firebaseEmulators.database.port)

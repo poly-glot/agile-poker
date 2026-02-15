@@ -1,8 +1,11 @@
+import { getApp } from 'firebase/app'
 import { getDatabase, ref, get, update, set, onValue, onChildAdded, onChildChanged, onChildRemoved } from 'firebase/database'
 import { getFunctions, httpsCallable } from 'firebase/functions'
 import { getAuth, onAuthStateChanged, signInWithCustomToken, updateProfile, signOut as firebaseSignOut } from 'firebase/auth'
 
 import debounce from 'lodash.debounce'
+
+const FUNCTIONS_REGION = 'europe-west1'
 
 import paramsManager from './params'
 import authDialog from '../auth-dialog'
@@ -35,7 +38,7 @@ export class RealtimeDatabase {
   signIn (username) {
     return new Promise((resolve, reject) => {
       (async () => {
-        const functions = getFunctions()
+        const functions = getFunctions(getApp(), FUNCTIONS_REGION)
         const loginFunction = httpsCallable(functions, 'login')
 
         try {
@@ -63,7 +66,7 @@ export class RealtimeDatabase {
   createRoom () {
     return new Promise((resolve, reject) => {
       (async () => {
-        const functions = getFunctions()
+        const functions = getFunctions(getApp(), FUNCTIONS_REGION)
         const loginFunction = httpsCallable(functions, 'createRoom')
 
         try {

@@ -9,11 +9,12 @@ initializeApp()
 
 // Only enforce App Check in production (emulator doesn't support it)
 const isEmulator = process.env.FUNCTIONS_EMULATOR === 'true'
+const region = 'europe-west1'
 
 const validUsernamePattern = /^[a-z\d\-_\s]+$/i
 
 exports.login = onCall(
-  { enforceAppCheck: !isEmulator },
+  { enforceAppCheck: !isEmulator, region },
   async (request) => {
     const { username } = request.data
 
@@ -34,7 +35,7 @@ exports.login = onCall(
 )
 
 exports.createRoom = onCall(
-  { enforceAppCheck: !isEmulator },
+  { enforceAppCheck: !isEmulator, region },
   async (request) => {
     const uid = request.auth?.uid
 
@@ -57,7 +58,8 @@ exports.createRoom = onCall(
 exports.cleanup = onSchedule(
   {
     schedule: 'every 24 hours',
-    timeZone: 'Europe/London'
+    timeZone: 'Europe/London',
+    region
   },
   async () => {
     try {
