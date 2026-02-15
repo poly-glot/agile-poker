@@ -44,7 +44,7 @@ export class RealtimeDatabase {
         try {
           const auth = getAuth()
           const { data: { token } } = await loginFunction({ username })
-          signInWithCustomToken(auth, token)
+          await signInWithCustomToken(auth, token)
           await updateProfile(auth.currentUser, { displayName: username })
           resolve(true)
         } catch (err) {
