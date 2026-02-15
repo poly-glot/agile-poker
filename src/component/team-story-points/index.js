@@ -39,15 +39,15 @@ export class TeamStoryPoints {
 
     for (const [points, values] of groupByStoryPoints(pointedList)) {
       const row = this.template.content.cloneNode(true)
-      row.querySelector('.team-story-points__name').innerHTML = values.join(', ')
-      row.querySelector('.team-story-points__points').innerHTML = points
+      row.querySelector('.team-story-points__name').textContent = values.join(', ')
+      row.querySelector('.team-story-points__points').textContent = points
 
       this.content.appendChild(row)
     }
 
     for (const { points, name } of waitingList) {
       const row = this.template.content.cloneNode(true)
-      row.querySelector('.team-story-points__name').innerHTML = name
+      row.querySelector('.team-story-points__name').textContent = name
 
       const removeIcon = points === StoryPoints.HIDDEN_INT
         ? '.team-story-points__userwaiting'

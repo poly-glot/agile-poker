@@ -1,12 +1,22 @@
-const admin = require('firebase-admin')
-const test = require('firebase-functions-test')()
-const { login, createRoom, cleanup } = require('./')
+import { describe, it, expect, beforeEach, afterAll } from 'vitest'
+import { getDatabase } from 'firebase-admin/database'
+import { getApp, deleteApp } from 'firebase-admin/app'
+import functionsTest from 'firebase-functions-test'
+import { login, createRoom, cleanup } from './index.js'
+
+const test = functionsTest()
 
 describe('Firebase Cloud functions', () => {
-
-  afterAll(() => {
-    test.cleanup();
-  });
+  afterAll(async () => {
+    test.cleanup()
+    // Clean up firebase-admin app to prevent open handles
+    try {
+      const app = getApp()
+      await deleteApp(app)
+    } catch (e) {
+      // App may not exist, ignore
+    }
+  })
 
   describe('Login', () => {
     let loginFunction
@@ -16,21 +26,21 @@ describe('Firebase Cloud functions', () => {
     })
 
     describe('Should throw an error', () => {
-      it('When username is empty', () => {
-        expect(() => loginFunction({username: null})).rejects.toThrow()
+      it('When username is empty', async () => {
+        await expect(loginFunction({ data: { username: null } })).rejects.toThrow()
       })
 
-      it('When username has more than 32 characters', () => {
-        expect(() => loginFunction({username: "a".repeat(64)})).rejects.toThrow()
+      it('When username has more than 32 characters', async () => {
+        await expect(loginFunction({ data: { username: 'a'.repeat(64) } })).rejects.toThrow()
       })
 
-      it('When username contains non-alpha characters', () => {
-        expect(() => loginFunction({username: "name!"})).rejects.toThrow()
+      it('When username contains non-alpha characters', async () => {
+        await expect(loginFunction({ data: { username: 'name!' } })).rejects.toThrow()
       })
     })
 
-    it('Should provide a token for valid username', () => {
-      expect(loginFunction({username: "name"})).resolves.toEqual(expect.objectContaining({
+    it('Should provide a token for valid username', async () => {
+      await expect(loginFunction({ data: { username: 'name' } })).resolves.toEqual(expect.objectContaining({
         token: expect.any(String)
       }))
     })
@@ -43,14 +53,14 @@ describe('Firebase Cloud functions', () => {
       createRoomFunction = test.wrap(createRoom)
     })
 
-    it('Should throw an error When user is not logged in', () => {
-      expect(() => createRoomFunction()).rejects.toThrow()
+    it('Should throw an error When user is not logged in', async () => {
+      await expect(createRoomFunction({ auth: null })).rejects.toThrow()
     })
 
-    it('Should generate a new auth token with room administration credentials when user is logged in', () => {
-      expect(createRoomFunction({}, { auth: { uid: "name" }})).resolves.toEqual(expect.objectContaining({
+    it('Should generate a new auth token with room administration credentials when user is logged in', async () => {
+      await expect(createRoomFunction({ auth: { uid: 'name' } })).resolves.toEqual(expect.objectContaining({
         token: expect.any(String),
-        roomId: expect.any(String),
+        roomId: expect.any(String)
       }))
     })
   })
@@ -81,12 +91,12 @@ describe('Firebase Cloud functions', () => {
       testData[`storyPoints/${yearMonthDay}/DA761233-ED42-11CE-BACD-00AA0057C125/userY`] = 5
       testData[`storyPoints/${yearMonthDay}/DA761233-ED42-11CE-BACD-00AA0057C125/userZ`] = 8
 
-      await admin.database().ref().update(testData)
+      await getDatabase().ref().update(testData)
     })
 
     it('Should remove all historic data except today', async () => {
       await cleanupFunction({})
-      const snapshot = await admin.database().ref('storyPoints').get()
+      const snapshot = await getDatabase().ref('storyPoints').get()
       const data = snapshot.val()
       const keys = Object.keys(data)
 

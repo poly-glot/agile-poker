@@ -1,4 +1,3 @@
-import dialogPolyfill from 'dialog-polyfill'
 import database from '../database'
 import AlertService from '../../component/alert/alert'
 
@@ -24,7 +23,6 @@ export class AuthDialog {
     const dialog = template.content.querySelector('#authDialog').cloneNode(true)
     dialog.removeAttribute('id')
     dialog.classList.add('auth-dialog')
-    dialogPolyfill.registerDialog(dialog)
 
     const form = dialog.querySelector('form')
     form.addEventListener('submit', this.onFormSubmit)
@@ -69,7 +67,13 @@ export class AuthDialog {
       await database.signIn(value)
       AlertService.announce('You are logged in')
     } catch (err) {
-      this.setError(err.toString())
+      // Provide user-friendly error messages
+      const errorMessage = err.message || err.toString()
+      if (errorMessage.includes('internal') || errorMessage.includes('INTERNAL')) {
+        this.setError('Unable to connect. Please try again later.')
+      } else {
+        this.setError(errorMessage)
+      }
     }
   }
 
@@ -87,13 +91,13 @@ export class AuthDialog {
 
     if (errorMsg) {
       username.setAttribute('aria-invalid', 'true')
-      error.innerHTML = errorMsg
+      error.textContent = errorMsg
       submit.disabled = false
 
       username.focus()
     } else {
       username.removeAttribute('aria-invalid')
-      error.innerHTML = ''
+      error.textContent = ''
     }
   }
 

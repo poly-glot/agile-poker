@@ -1,4 +1,3 @@
-import dialogPolyfill from 'dialog-polyfill'
 import database from '../database'
 
 export class RoomDialog {
@@ -12,7 +11,6 @@ export class RoomDialog {
     const dialog = template.content.querySelector('#roomDialog').cloneNode(true)
     dialog.removeAttribute('id')
     dialog.classList.add('room-dialog')
-    dialogPolyfill.registerDialog(dialog)
 
     const form = dialog.querySelector('form')
     form.addEventListener('submit', this.onFormSubmit)
@@ -60,11 +58,11 @@ export class RoomDialog {
     const error = form.querySelector('.form__error')
 
     if (errorMsg) {
-      error.innerHTML = errorMsg
+      error.textContent = errorMsg
       submit.disabled = false
       submit.focus()
     } else {
-      error.innerHTML = ''
+      error.textContent = ''
     }
   }
 

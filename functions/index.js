@@ -1,83 +1,96 @@
-const functions = require('firebase-functions')
-const admin = require('firebase-admin')
+const { onCall, HttpsError } = require('firebase-functions/v2/https')
+const { onSchedule } = require('firebase-functions/v2/scheduler')
+const { initializeApp } = require('firebase-admin/app')
+const { getAuth } = require('firebase-admin/auth')
+const { getDatabase } = require('firebase-admin/database')
 const { v4: uuid } = require('uuid')
 
-admin.initializeApp();
+initializeApp()
+
+// Only enforce App Check in production (emulator doesn't support it)
+const isEmulator = process.env.FUNCTIONS_EMULATOR === 'true'
 
 const validUsernamePattern = /^[a-z\d\-_\s]+$/i
 
-exports.login = functions.https.onCall(async (data, context) => {
-  // @TODO enable App Check when unit testing library add support
-  /* if (context.app === undefined) {
-    throw new functions.https.HttpsError(
-      'failed-precondition',
-      'The function must be called from an App Check verified app.')
-  }*/
+exports.login = onCall(
+  { enforceAppCheck: !isEmulator },
+  async (request) => {
+    const { username } = request.data
 
-  const { username } = data;
+    if (!username || username.length > 32 || !validUsernamePattern.test(username)) {
+      throw new HttpsError('failed-precondition', 'Invalid username. Username should be less than 32 characters and contain alpha numeric & space characters only. e.g. "Super Man"')
+    }
 
-  if (!username || username.length > 32 || !validUsernamePattern.test(username)) {
-    throw new functions.https.HttpsError('failed-precondition', 'Invalid username. Username should be less than 32 characters and contain alpha numeric & space characters only. e.g. "Super Man"');
+    if (username === 'revealPoints') {
+      throw new HttpsError('failed-precondition', 'revealPoints is a reserved username. Please choose some thing else.')
+    }
+
+    const token = await getAuth().createCustomToken(username)
+
+    return {
+      token
+    }
   }
+)
 
-  if (username === 'revealPoints') {
-    throw new functions.https.HttpsError('failed-precondition', 'revealPoints is a reserved username. Please choose some thing else.');
+exports.createRoom = onCall(
+  { enforceAppCheck: !isEmulator },
+  async (request) => {
+    const uid = request.auth?.uid
+
+    if (!uid) {
+      throw new HttpsError('unauthenticated', 'You are not logged in')
+    }
+
+    const roomAdmin = uuid()
+
+    const token = await getAuth().createCustomToken(uid, { roomAdmin })
+
+    return {
+      token,
+      uid,
+      roomId: roomAdmin
+    }
   }
+)
 
-  const token = await admin.auth().createCustomToken(username);
+exports.cleanup = onSchedule(
+  {
+    schedule: 'every 24 hours',
+    timeZone: 'Europe/London'
+  },
+  async () => {
+    try {
+      const today = new Date()
+      const year = today.getUTCFullYear()
+      const month = today.getUTCMonth() + 1
+      const day = today.getUTCDate()
+      const yearMonthDay = year + (month < 10 ? '0' + month : month) + (day < 10 ? '0' + day : day)
 
-  return {
-    token
-  }
-});
+      console.log(`Starting cleanup for date: ${yearMonthDay}`)
 
-exports.createRoom = functions.https.onCall(async (data, context) => {
-  // @TODO enable App Check when unit testing library add support
-  /*if (context.app === undefined) {
-    throw new functions.https.HttpsError(
-      'failed-precondition',
-      'The function must be called from an App Check verified app.')
-  }*/
+      const db = getDatabase()
+      const snapshot = await db.ref('storyPoints').get()
+      const data = snapshot.val()
 
-  const { uid } = context.auth
+      if (!data) {
+        console.log('No data to clean up')
+        return null
+      }
 
-  if (!uid) {
-    throw new functions.https.HttpsError('failed-precondition', 'You are not logged in');
-  }
+      const dates = Object.keys(data).filter(ymd => ymd !== yearMonthDay)
+      console.log(`Found ${dates.length} old date(s) to remove`)
 
-  const roomAdmin = uuid()
+      for (const ymd of dates) {
+        await db.ref(`storyPoints/${ymd}`).remove()
+        console.log(`Removed data for: ${ymd}`)
+      }
 
-  const token = await admin.auth().createCustomToken(uid, {roomAdmin});
-
-  return {
-    token,
-    uid,
-    roomId: roomAdmin
-  }
-})
-
-exports.cleanup = functions.pubsub.schedule('every 24 hours')
-  .timeZone('Europe/London')
-  .onRun(async (context) => {
-
-    const today = new Date()
-    const year = today.getUTCFullYear()
-    const month = today.getUTCMonth() + 1
-    const day = today.getUTCDate()
-    const yearMonthDay = year + (month < 10 ? '0' + month : month) + (day < 10 ? '0' + day : day)
-
-    const db = admin.database()
-    const snapshot = await db.ref('storyPoints').get()
-    const data = snapshot.val()
-
-    if (!data) {
+      console.log('Cleanup completed successfully')
       return null
+    } catch (error) {
+      console.error('Cleanup failed:', error)
+      throw error
     }
-
-    const dates = Object.keys(data).filter(ymd => ymd !== yearMonthDay)
-    for (const ymd of dates) {
-      await db.ref(`storyPoints/${ymd}`).remove()
-    }
-
-    return null;
-  });
+  }
+)
