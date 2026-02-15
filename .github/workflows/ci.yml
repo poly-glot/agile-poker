@@ -41,8 +41,8 @@ jobs:
           name: agile-poker
           fail_ci_if_error: true
 
-      - name: Build
-        run: npm run build
+      - name: Build for E2E
+        run: npm run build:e2e
 
       - name: Cypress run
         uses: cypress-io/github-action@v6

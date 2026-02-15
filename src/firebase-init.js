@@ -4,17 +4,16 @@ import { getDatabase, connectDatabaseEmulator } from 'firebase/database'
 import { getFunctions, connectFunctionsEmulator } from 'firebase/functions'
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'
 
-// Only enable emulator mode in development environment
-// Vite uses import.meta.env instead of process.env
-const isDevelopment = import.meta.env.DEV
-const isEmulatorMode = isDevelopment && !import.meta.env.VITE_DISABLE_FIREBASE_EMULATORS
+// Enable emulator mode when VITE_USE_EMULATORS is set (via .env.development)
+// or when running Vite dev server (import.meta.env.DEV)
+const isEmulatorMode = import.meta.env.VITE_USE_EMULATORS === 'true'
 
 // To test App Check locally:
 // 1. Set VITE_TEST_APPCHECK=true in .env.local
 // 2. Register a debug token in Firebase Console (App Check → Apps → Manage debug tokens)
 // 3. Set VITE_APPCHECK_DEBUG_TOKEN=<your-debug-token> in .env.local
 // This will use production config but with App Check debug mode
-const testAppCheckLocally = isDevelopment && import.meta.env.VITE_TEST_APPCHECK === 'true'
+const testAppCheckLocally = import.meta.env.DEV && import.meta.env.VITE_TEST_APPCHECK === 'true'
 
 // Production Firebase config
 const productionConfig = {

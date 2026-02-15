@@ -14,6 +14,7 @@
     "start": "firebase emulators:exec --project demo-agile-poker \"vite --mode development\"",
     "serve": "firebase emulators:start --project demo-agile-poker",
     "build": "vite build",
+    "build:e2e": "vite build --mode development",
     "preview": "vite preview",
     "lint:js": "eslint src/ --fix",
     "lint:css": "stylelint --fix src/**/*.css",
