@@ -352,6 +352,9 @@
                     <button type="button" id="js-reveal" class="button-secondary" data-cy="showStoryPoints">Reveal Story Points</button>
                     <button type="button" id="js-reset" class="button-danger toolbar__reset"  data-cy="reset">RESET</button>
                   </template>
+                  <template class="site__request-admin">
+                    <button type="button" id="js-request-admin" class="button-outline" data-cy="requestAdmin">Request Admin Access</button>
+                  </template>
                 </div>
             </div>
             <!--googleon: index-->
@@ -477,6 +480,52 @@
             <button type="submit"  data-cy="submit">CREATE A ROOM</button>
           </div>
         </form>
+      </dialog>
+      <dialog class="dialog" id="promotionDialog">
+        <header class="dialog__header">
+          <h1 class="no-margin">Admin Promotion Vote</h1>
+          <button type="button" class="dialog__close" data-cy="dialog-close" aria-label="Close">&#x2715;</button>
+        </header>
+        <div class="dialog__content promotion-dialog">
+          <div class="promotion-dialog__info">
+            <p class="promotion-dialog__requester-line"><strong data-cy="promotion-requester"></strong> is requesting admin access.</p>
+          </div>
+          <div class="promotion-dialog__timer-ring">
+            <svg class="promotion-timer-svg" viewBox="0 0 120 120">
+              <circle class="promotion-timer-track" cx="60" cy="60" r="52" />
+              <circle class="promotion-timer-progress" cx="60" cy="60" r="52" data-cy="promotion-timer-ring" />
+            </svg>
+            <div class="promotion-timer-text">
+              <span class="promotion-timer-value" data-cy="promotion-countdown">60</span>
+              <span class="promotion-timer-label">seconds</span>
+            </div>
+          </div>
+          <div class="promotion-dialog__timer" hidden>
+            Time remaining: <span>60</span>s
+          </div>
+          <div class="promotion-dialog__stats" data-cy="promotion-stats">
+            <div class="promotion-stat promotion-stat--approve">
+              <span class="promotion-stat__count" data-cy="promotion-approve-count">0</span>
+              <span class="promotion-stat__label">Approved</span>
+            </div>
+            <div class="promotion-stat promotion-stat--reject">
+              <span class="promotion-stat__count" data-cy="promotion-reject-count">0</span>
+              <span class="promotion-stat__label">Rejected</span>
+            </div>
+            <div class="promotion-stat promotion-stat--pending">
+              <span class="promotion-stat__count" data-cy="promotion-pending-count">0</span>
+              <span class="promotion-stat__label">Pending</span>
+            </div>
+          </div>
+          <div class="promotion-dialog__votes" data-cy="promotion-votes"></div>
+          <div class="promotion-dialog__actions" data-cy="promotion-actions">
+            <button type="button" class="button-approve" data-cy="promotion-approve">APPROVE</button>
+            <button type="button" class="button-danger" data-cy="promotion-reject">REJECT</button>
+          </div>
+          <div class="promotion-dialog__result" data-cy="promotion-result" hidden>
+            <p data-cy="promotion-result-text"></p>
+          </div>
+        </div>
       </dialog>
     </template>
 

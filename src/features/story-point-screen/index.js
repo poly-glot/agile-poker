@@ -5,6 +5,7 @@ import roomDialog from '../room-dialog'
 import { StoryPoints, TeamStoryPoints } from '../../component/team-story-points'
 import pokerCards from '../../component/poker-cards'
 import toolbar from '../toolbar'
+import promotionRequest from '../promotion-request'
 import { isNotPointed } from '../../component/team-story-points/utils'
 
 export class StoryPointScreen {
@@ -43,9 +44,14 @@ export class StoryPointScreen {
 
       pokerCards.onUserPointed(this.onUserPointHandler)
 
-      if (claims.roomAdmin === paramsManager.roomId) {
+      const isAdmin = claims.roomAdmin === paramsManager.roomId
+      if (isAdmin) {
         toolbar.enableAdminControls()
+      } else {
+        toolbar.enableRequestAdmin(() => promotionRequest.requestPromotion())
       }
+
+      promotionRequest.listen(paramsManager.roomId, user.uid, isAdmin)
 
       this.enableStoryPoints()
     }
