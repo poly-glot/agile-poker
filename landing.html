@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agile Poker - Free Planning Poker Tool</title>
+    <meta name="description" content="Planning poker made simple. Free, open source, and privacy-first estimation tool for agile teams.">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Agile Poker - Free & Open Source">
+    <meta property="og:url" content="https://agile.junaid.guru/">
+    <meta property="og:image" content="https://agile.junaid.guru/assets/social.jpg">
+    <meta property="og:description" content="Make estimating stories fast, efficient and fun. Completely free and open source.">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Agile Poker - Free & Open Source">
+    <meta name="twitter:description" content="Make estimating stories fast, efficient and fun">
+
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+
+    <style>
+        :root {
+            --text-primary: #111;
+            --text-secondary: #555;
+            --text-tertiary: #888;
+            --border: rgb(0 0 0 / 10%);
+            --border-strong: rgb(0 0 0 / 18%);
+            --bg: #fff;
+            --bg-offset: #f8f8f6;
+            --brand: #111;
+            --brand-text: #fff;
+            --accent: #111;
+            --font: "Helvetica Neue", -apple-system, blinkmacsystemfont, "Segoe UI", roboto, arial, sans-serif;
+            --font-mono: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", monospace;
+            --footer-bg: #111;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font);
+            color: var(--text-primary);
+            background: var(--bg);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ── Header ── */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 40px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand {
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .brand a { color: inherit; text-decoration: none; }
+        .brand a:hover { opacity: 0.6; }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .header-nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.82rem;
+            letter-spacing: 0.02em;
+            transition: color 0.2s;
+        }
+
+        .header-nav a:hover { color: var(--text-primary); }
+
+        .header-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: opacity 0.2s;
+        }
+
+        .header-link:hover { opacity: 0.5; }
+
+        .header-link svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        /* ── Layout ── */
+        .wrap { max-width: 1120px; margin: 0 auto; padding: 0 40px; }
+        .wrap-narrow { max-width: 720px; margin: 0 auto; padding: 0 40px; }
+
+        /* ── Hero ── */
+        .hero {
+            padding: 140px 0 120px;
+            position: relative;
+        }
+
+        .hero-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .hero-text h1 {
+            font-size: clamp(2.4rem, 4.5vw, 3.6rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            margin-bottom: 24px;
+        }
+
+        .hero-text p {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 40px;
+            max-width: 420px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--brand);
+            color: var(--brand-text);
+            padding: 14px 36px;
+            border-radius: 2px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            letter-spacing: 0.04em;
+            transition: all 0.2s;
+        }
+
+        .cta-button:hover {
+            background: #333;
+        }
+
+        .cta-secondary {
+            display: inline-block;
+            color: var(--text-primary);
+            padding: 14px 0;
+            margin-left: 24px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            letter-spacing: 0.04em;
+            border-bottom: 1px solid var(--text-primary);
+            transition: opacity 0.2s;
+        }
+
+        .cta-secondary:hover { opacity: 0.5; }
+
+        /* Hero Mockup */
+        .hero-mockup {
+            position: relative;
+        }
+
+        .mockup-frame {
+            border: 1px solid var(--border-strong);
+            border-radius: 4px;
+            background: var(--bg);
+            overflow: hidden;
+        }
+
+        .mockup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .mockup-header-brand {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-primary);
+        }
+
+        .mockup-header-link {
+            font-size: 0.6rem;
+            color: #01189b;
+            text-decoration: underline;
+            font-weight: 500;
+        }
+
+        .mockup-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            letter-spacing: 0.04em;
+            min-height: 40px;
+            background: var(--bg);
+            white-space: nowrap;
+        }
+
+        .mockup-toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .mockup-toolbar-status {
+            font-size: 0.6rem;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .mockup-toolbar-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .mockup-toolbar-link {
+            font-size: 0.52rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            margin-right: 4px;
+        }
+
+        .mockup-toolbar-btn {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 2px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .mockup-btn-reveal {
+            background: #d6d6d6;
+            color: #000;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            padding: 5px 10px;
+            font-size: 0.52rem;
+        }
+
+        .mockup-btn-reset {
+            background: #ac1b11;
+            color: #fff;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            padding: 5px 10px;
+            font-size: 0.52rem;
+        }
+
+        .mockup-body { display: flex; min-height: 200px; }
+
+        .mockup-cards-area {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            padding: 16px;
+            border-right: 1px solid var(--border);
+            align-content: start;
+        }
+
+        .mini-card {
+            aspect-ratio: 2 / 3;
+            border: 1px solid rgb(0 0 0 / 15%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: #000;
+            background: var(--bg);
+            transition: background 300ms cubic-bezier(0.25, 1, 0.5, 1), color 200ms cubic-bezier(0.25, 1, 0.5, 1), border-color 200ms;
+        }
+
+        .mini-card.selected {
+            background: #2193b0;
+            color: #fff;
+            border-color: #2193b0;
+        }
+
+        .mockup-team-area {
+            width: 200px;
+            padding: 30px 35px 30px 30px;
+            background: rgb(194 194 194 / 10%);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .mockup-member {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.78rem;
+        }
+
+        .mockup-member-name {
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .mockup-member-vote {
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgb(0 0 0 / 30%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-left: 20px;
+        }
+
+        .mockup-member-vote.done { color: var(--text-primary); border-color: rgb(0 0 0 / 30%); }
+        .mockup-member-vote.waiting { color: var(--text-tertiary); }
+
+        /* ── Mockup Animation ── */
+        @keyframes dotPulse {
+            0%, 20% { opacity: 0.2; }
+            50% { opacity: 1; }
+            80%, 100% { opacity: 0.2; }
+        }
+
+        .dots-animated {
+            display: flex;
+            gap: 3px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dots-animated span {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--text-tertiary);
+            animation: dotPulse 1.4s infinite ease-in-out;
+        }
+
+        .dots-animated span:nth-child(1) { animation-delay: 0s; }
+        .dots-animated span:nth-child(2) { animation-delay: 0.2s; }
+        .dots-animated span:nth-child(3) { animation-delay: 0.4s; }
+
+        /* "?" card: starts selected, then deselects */
+        @keyframes cardDeselect {
+            0%, 50% { background: #2193b0; color: #fff; border-color: #2193b0; }
+            65%, 100% { background: var(--bg); color: #000; border-color: rgb(0 0 0 / 15%); }
+        }
+
+        .mini-card.anim-deselect {
+            animation: cardDeselect 4s infinite;
+            position: relative;
+        }
+
+        /* "5" card: starts unselected, then selects */
+        @keyframes cardSelect {
+            0%, 50% { background: var(--bg); color: #000; border-color: rgb(0 0 0 / 15%); }
+            65%, 100% { background: #2193b0; color: #fff; border-color: #2193b0; }
+        }
+
+        .mini-card.anim-select {
+            animation: cardSelect 4s infinite;
+            position: relative;
+        }
+
+        /* Jake dots to vote animation */
+        @keyframes dotsToVote {
+            0%, 55% { opacity: 1; }
+            65%, 100% { opacity: 0; }
+        }
+
+        @keyframes voteAppear {
+            0%, 55% { opacity: 0; }
+            65%, 100% { opacity: 1; }
+        }
+
+        .jake-dots {
+            animation: dotsToVote 4s infinite;
+        }
+
+        .jake-vote {
+            animation: voteAppear 4s infinite;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mockup-member-vote.anim-jake {
+            position: relative;
+        }
+
+        /* ── Divider ── */
+        .section-divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 0;
+        }
+
+        /* ── Label ── */
+        .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        /* ── Features — "Built for teams that value simplicity" ── */
+        .features-section {
+            padding: 120px 0;
+        }
+
+        .features-header {
+            margin-bottom: 80px;
+            max-width: 560px;
+        }
+
+        .features-header h2 {
+            font-size: clamp(2rem, 3.5vw, 2.8rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+            margin-bottom: 20px;
+        }
+
+        .features-header p {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            line-height: 1.75;
+        }
+
+        .features-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .feature-item {
+            padding: 48px 40px 48px 0;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+
+        .feature-item:not(:nth-child(3n))::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: var(--border);
+        }
+
+        .feature-item:not(:nth-child(3n)) {
+            padding-right: 40px;
+        }
+
+        .feature-item:not(:nth-child(3n + 1)) {
+            padding-left: 40px;
+        }
+
+        .feature-icon-line {
+            width: 36px;
+            height: 36px;
+            margin-bottom: 24px;
+        }
+
+        .feature-icon-line svg {
+            width: 100%;
+            height: 100%;
+            stroke: var(--text-primary);
+            stroke-width: 1.5;
+            fill: none;
+        }
+
+        .feature-item h3 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            letter-spacing: -0.01em;
+        }
+
+        .feature-item p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        /* ── Concept — editorial layout ── */
+        .concept-section {
+            padding: 120px 0;
+            background: var(--bg-offset);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .concept-layout {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 100px;
+            align-items: start;
+        }
+
+        .concept-text h2 {
+            font-size: clamp(2rem, 3.5vw, 2.8rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+            margin-bottom: 24px;
+        }
+
+        .concept-text > p {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 48px;
+        }
+
+        .concept-steps {
+            counter-reset: step;
+            list-style: none;
+        }
+
+        .concept-steps li {
+            counter-increment: step;
+            display: flex;
+            gap: 20px;
+            padding: 24px 0;
+            border-top: 1px solid var(--border);
+            align-items: baseline;
+        }
+
+        .concept-steps li::before {
+            content: counter(step, decimal-leading-zero);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            font-family: var(--font-mono);
+            flex-shrink: 0;
+            padding-top: 2px;
+        }
+
+        .concept-step-content h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .concept-step-content p {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.65;
+        }
+
+        .concept-illustration {
+            position: relative;
+            padding-top: 20px;
+        }
+
+        .concept-illustration svg {
+            width: 100%;
+            height: auto;
+        }
+
+        /* ── Benefits ── */
+        .benefits-section {
+            padding: 120px 0;
+        }
+
+        .benefits-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 100px;
+            align-items: center;
+        }
+
+        .benefits-text h2 {
+            font-size: clamp(2rem, 3.5vw, 2.8rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+            margin-bottom: 48px;
+        }
+
+        .benefits-list {
+            list-style: none;
+        }
+
+        .benefits-list li {
+            display: flex;
+            gap: 16px;
+            align-items: baseline;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+            line-height: 1.65;
+        }
+
+        .benefits-list li:first-child {
+            border-top: 1px solid var(--border);
+        }
+
+        .check-mark {
+            flex-shrink: 0;
+            width: 18px;
+            height: 18px;
+            position: relative;
+            top: 2px;
+        }
+
+        .check-mark svg {
+            width: 100%;
+            height: 100%;
+            stroke: var(--text-primary);
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .benefits-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .benefits-visual svg {
+            width: 100%;
+            max-width: 380px;
+            height: auto;
+        }
+
+        /* ── Comparison ── */
+        .comparison-section {
+            padding: 120px 0;
+            background: var(--bg-offset);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .comparison-header {
+            margin-bottom: 60px;
+            max-width: 480px;
+        }
+
+        .comparison-header h2 {
+            font-size: clamp(2rem, 3.5vw, 2.8rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+        }
+
+        .comparison-table { overflow-x: auto; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg);
+            border: 1px solid var(--border);
+        }
+
+        th, td {
+            padding: 18px 24px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.88rem;
+        }
+
+        th {
+            font-weight: 600;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-tertiary);
+            background: var(--bg-offset);
+        }
+
+        td:first-child { font-weight: 500; }
+        td:not(:first-child) { text-align: center; }
+        tr:last-child td { border-bottom: none; }
+
+        th:nth-child(2), td:nth-child(2) {
+            background: rgb(0 0 0 / 3%);
+        }
+
+        th:nth-child(2) {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .dot-yes {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #2e7d5b;
+            vertical-align: middle;
+        }
+
+        .dot-no {
+            color: var(--text-tertiary);
+            font-size: 0.85rem;
+        }
+
+        /* ── CTA ── */
+        .cta-section {
+            padding: 120px 0;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+        }
+
+        .cta-section p {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+        }
+
+        /* ── Footer ── */
+        footer {
+            background: var(--footer-bg);
+            color: #999;
+            padding: 48px 0 36px;
+        }
+
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-brand {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #fff;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 28px;
+        }
+
+        .footer-links a {
+            color: #777;
+            text-decoration: none;
+            font-size: 0.82rem;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover { color: #fff; }
+
+        .footer-copyright {
+            font-size: 0.78rem;
+            color: #555;
+            text-align: center;
+            margin-top: 36px;
+            padding-top: 24px;
+            border-top: 1px solid rgb(255 255 255 / 8%);
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 900px) {
+            header { padding: 14px 24px; }
+            .wrap, .wrap-narrow { padding: 0 24px; }
+
+            .hero { padding: 80px 0 60px; }
+            .hero-layout {
+                grid-template-columns: 1fr;
+                gap: 48px;
+            }
+
+            .hero-text h1 { font-size: 2.2rem; }
+
+            .features-row {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-item {
+                padding: 32px 0 !important;
+            }
+
+            .feature-item::after { display: none !important; }
+
+            .concept-layout {
+                grid-template-columns: 1fr;
+                gap: 48px;
+            }
+
+            .benefits-layout {
+                grid-template-columns: 1fr;
+                gap: 48px;
+            }
+
+            .benefits-visual { order: -1; }
+
+            .mockup-team-area { display: none; }
+            .mockup-cards-area { border-right: none; }
+
+            .footer-inner { flex-direction: column; gap: 20px; text-align: center; }
+            .footer-links { flex-wrap: wrap; justify-content: center; }
+
+            th, td { padding: 12px 10px; font-size: 0.8rem; }
+        }
+
+        @media (max-width: 480px) {
+            .hero-text h1 { font-size: 1.8rem; }
+            .features-section, .concept-section, .benefits-section, .comparison-section, .cta-section { padding: 80px 0; }
+            .mockup-toolbar { flex-direction: column; gap: 6px; align-items: flex-start; }
+            .mockup-toolbar-link { display: none; }
+            .mini-card { width: 40px; height: 60px; font-size: 0.85rem; }
+            .cta-secondary { display: block; margin: 16px 0 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <h1 class="brand"><a href="https://agile.junaid.guru/">Agile Poker</a></h1>
+        <div class="header-right">
+            <nav class="header-nav">
+                <a href="https://github.com/poly-glot/agile-poker" target="_blank" rel="noopener">Source</a>
+            </nav>
+            <a href="https://github.com/poly-glot/agile-poker" class="header-link" target="_blank" rel="noopener" aria-label="GitHub">
+                <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero — asymmetric split layout -->
+    <section class="hero">
+        <div class="wrap">
+            <div class="hero-layout">
+                <div class="hero-text">
+                    <h1>Your estimations,<br>frictionless</h1>
+                    <p>Planning poker made simple. No accounts, no ads, no tracking. Free and open source, built for teams that move fast.</p>
+                    <div>
+                        <a href="https://agile.junaid.guru/" class="cta-button">Start a session</a>
+                        <a href="https://github.com/poly-glot/agile-poker" class="cta-secondary" target="_blank" rel="noopener">View on GitHub</a>
+                    </div>
+                </div>
+
+                <div class="hero-mockup">
+                    <div class="mockup-frame">
+                        <div class="mockup-header">
+                            <span class="mockup-header-brand">Agile Poker</span>
+                            <span class="mockup-header-link">GitHub</span>
+                        </div>
+                        <div class="mockup-toolbar">
+                            <div class="mockup-toolbar-left">
+                                <span class="mockup-toolbar-link">Copy &amp; Share Link</span>
+                            </div>
+                            <div class="mockup-toolbar-actions">
+                                <span class="mockup-toolbar-btn mockup-btn-reveal">Reveal</span>
+                                <span class="mockup-toolbar-btn mockup-btn-reset">Reset</span>
+                            </div>
+                        </div>
+                        <div class="mockup-body">
+                            <div class="mockup-cards-area">
+                                <div class="mini-card anim-deselect">?</div>
+                                <div class="mini-card">1</div>
+                                <div class="mini-card">2</div>
+                                <div class="mini-card">3</div>
+                                <div class="mini-card anim-select">5</div>
+                                <div class="mini-card">8</div>
+                                <div class="mini-card">13</div>
+                                <div class="mini-card">20</div>
+                                <div class="mini-card">40</div>
+                                <div class="mini-card">100</div>
+                            </div>
+                            <div class="mockup-team-area">
+                                <div class="mockup-member">
+                                    <span class="mockup-member-name">Jake</span>
+                                    <div class="mockup-member-vote anim-jake">
+                                        <div class="jake-dots dots-animated"><span></span><span></span><span></span></div>
+                                        <div class="jake-vote">5</div>
+                                    </div>
+                                </div>
+                                <div class="mockup-member">
+                                    <span class="mockup-member-name">Lucien</span>
+                                    <div class="mockup-member-vote done">8</div>
+                                </div>
+                                <div class="mockup-member">
+                                    <span class="mockup-member-name">Adele</span>
+                                    <div class="mockup-member-vote waiting">
+                                        <div class="dots-animated"><span></span><span></span><span></span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features — line icons, grid with divider lines -->
+    <section class="features-section">
+        <div class="wrap">
+            <div class="features-header">
+                <span class="label">Why Agile Poker</span>
+                <h2>Built for teams that value simplicity</h2>
+                <p>No setup, no overhead. Everything you need to run effective estimation sessions, nothing you don't.</p>
+            </div>
+
+            <div class="features-row">
+                <!-- Completely Free -->
+                <div class="feature-item">
+                    <div class="feature-icon-line">
+                        <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="18" cy="18" r="14"/>
+                            <line x1="18" y1="10" x2="18" y2="26"/>
+                            <path d="M13 15c0-2.2 2.2-3 5-3s5 .8 5 3-2 2.5-5 3-5 1-5 3 2.2 3 5 3 5-.8 5-3"/>
+                        </svg>
+                    </div>
+                    <h3>Completely free</h3>
+                    <p>No hidden costs, no premium tiers, no credit card. Pure, unlimited planning poker for your entire team.</p>
+                </div>
+
+                <!-- No Registration -->
+                <div class="feature-item">
+                    <div class="feature-icon-line">
+                        <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18 4L32 12v12L18 32 4 24V12z"/>
+                            <polyline points="12,18 16,22 24,14"/>
+                        </svg>
+                    </div>
+                    <h3>No registration</h3>
+                    <p>Start estimating in seconds. No sign-ups, no forms, no email confirmation. Share a link and go.</p>
+                </div>
+
+                <!-- Privacy First -->
+                <div class="feature-item">
+                    <div class="feature-icon-line">
+                        <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18 4L6 10v8c0 8.4 5.1 16.2 12 18 6.9-1.8 12-9.6 12-18v-8z"/>
+                            <line x1="18" y1="14" x2="18" y2="20"/>
+                            <circle cx="18" cy="24" r="1"/>
+                        </svg>
+                    </div>
+                    <h3>Privacy first</h3>
+                    <p>Sessions are ephemeral. No data collection, no tracking, no analytics. Your estimation data stays yours.</p>
+                </div>
+
+                <!-- Real-time -->
+                <div class="feature-item">
+                    <div class="feature-icon-line">
+                        <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="18" cy="18" r="14"/>
+                            <polyline points="18,10 18,18 24,22"/>
+                        </svg>
+                    </div>
+                    <h3>Real-time sync</h3>
+                    <p>Votes appear instantly. Everyone sees updates the moment they happen, no refresh needed.</p>
+                </div>
+
+                <!-- Open Source -->
+                <div class="feature-item">
+                    <div class="feature-icon-line">
+                        <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                            <polyline points="12,8 4,18 12,28"/>
+                            <polyline points="24,8 32,18 24,28"/>
+                            <line x1="21" y1="6" x2="15" y2="30"/>
+                        </svg>
+                    </div>
+                    <h3>Open source</h3>
+                    <p>Fully transparent. Inspect the code, contribute improvements, or self-host your own instance.</p>
+                </div>
+
+                <!-- Any Device -->
+                <div class="feature-item">
+                    <div class="feature-icon-line">
+                        <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3" y="6" width="20" height="14" rx="2"/>
+                            <line x1="3" y1="24" x2="23" y2="24"/>
+                            <rect x="25" y="10" width="9" height="18" rx="2"/>
+                            <line x1="25" y1="24" x2="34" y2="24"/>
+                        </svg>
+                    </div>
+                    <h3>Any device</h3>
+                    <p>Responsive design that works seamlessly across desktop, tablet, and mobile browsers.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Concept — editorial split -->
+    <section class="concept-section">
+        <div class="wrap">
+            <div class="concept-layout">
+                <div class="concept-text">
+                    <span class="label">The concept</span>
+                    <h2>Planning poker, simplified</h2>
+                    <p>Planning poker is a consensus-based technique for estimating effort. Each team member selects a card representing their estimate, and all cards are revealed simultaneously &mdash; avoiding anchoring bias and encouraging honest assessment.</p>
+
+                    <ol class="concept-steps">
+                        <li>
+                            <div class="concept-step-content">
+                                <h3>Create a session</h3>
+                                <p>One click, no setup. You get a unique session URL instantly.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="concept-step-content">
+                                <h3>Share the link</h3>
+                                <p>Send the URL to your team. They join without signing up.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="concept-step-content">
+                                <h3>Vote together</h3>
+                                <p>Everyone picks their estimation card privately, in real-time.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="concept-step-content">
+                                <h3>Reveal and discuss</h3>
+                                <p>Cards flip simultaneously. Discuss outliers, reach consensus.</p>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="concept-illustration">
+                    <svg viewBox="0 0 400 440" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Scattered cards -->
+                        <rect x="60" y="40" width="80" height="110" rx="6" stroke="#111" stroke-width="1.5" fill="none" transform="rotate(-12 100 95)"/>
+                        <text x="92" y="102" font-size="28" font-weight="600" fill="#111" font-family="Helvetica Neue, sans-serif" transform="rotate(-12 100 95)">5</text>
+
+                        <rect x="160" y="20" width="80" height="110" rx="6" stroke="#111" stroke-width="1.5" fill="none" transform="rotate(3 200 75)"/>
+                        <text x="193" y="82" font-size="28" font-weight="600" fill="#111" font-family="Helvetica Neue, sans-serif" transform="rotate(3 200 75)">8</text>
+
+                        <rect x="260" y="50" width="80" height="110" rx="6" stroke="#111" stroke-width="1.5" fill="none" transform="rotate(8 300 105)"/>
+                        <text x="293" y="112" font-size="28" font-weight="600" fill="#111" font-family="Helvetica Neue, sans-serif" transform="rotate(8 300 105)">5</text>
+
+                        <!-- Connection lines (showing collaboration) -->
+                        <line x1="100" y1="180" x2="200" y2="200" stroke="#111" stroke-width="1" stroke-dasharray="4 4" opacity="0.3"/>
+                        <line x1="300" y1="180" x2="200" y2="200" stroke="#111" stroke-width="1" stroke-dasharray="4 4" opacity="0.3"/>
+
+                        <!-- People — minimal line art -->
+                        <!-- Person left -->
+                        <circle cx="80" cy="250" r="16" stroke="#111" stroke-width="1.5" fill="none"/>
+                        <circle cx="80" cy="246" r="5" stroke="#111" stroke-width="1" fill="none"/>
+                        <path d="M66 264 Q80 276 94 264" stroke="#111" stroke-width="1.5" fill="none"/>
+                        <line x1="80" y1="280" x2="80" y2="310" stroke="#111" stroke-width="1.5"/>
+                        <line x1="80" y1="290" x2="68" y2="300" stroke="#111" stroke-width="1.5"/>
+                        <line x1="80" y1="290" x2="92" y2="300" stroke="#111" stroke-width="1.5"/>
+
+                        <!-- Person center -->
+                        <circle cx="200" cy="240" r="16" stroke="#111" stroke-width="1.5" fill="none"/>
+                        <circle cx="200" cy="236" r="5" stroke="#111" stroke-width="1" fill="none"/>
+                        <path d="M186 254 Q200 266 214 254" stroke="#111" stroke-width="1.5" fill="none"/>
+                        <line x1="200" y1="270" x2="200" y2="300" stroke="#111" stroke-width="1.5"/>
+                        <line x1="200" y1="280" x2="188" y2="290" stroke="#111" stroke-width="1.5"/>
+                        <line x1="200" y1="280" x2="212" y2="290" stroke="#111" stroke-width="1.5"/>
+
+                        <!-- Person right -->
+                        <circle cx="320" cy="250" r="16" stroke="#111" stroke-width="1.5" fill="none"/>
+                        <circle cx="320" cy="246" r="5" stroke="#111" stroke-width="1" fill="none"/>
+                        <path d="M306 264 Q320 276 334 264" stroke="#111" stroke-width="1.5" fill="none"/>
+                        <line x1="320" y1="280" x2="320" y2="310" stroke="#111" stroke-width="1.5"/>
+                        <line x1="320" y1="290" x2="308" y2="300" stroke="#111" stroke-width="1.5"/>
+                        <line x1="320" y1="290" x2="332" y2="300" stroke="#111" stroke-width="1.5"/>
+
+                        <!-- Consensus result -->
+                        <circle cx="200" cy="380" r="30" stroke="#111" stroke-width="1.5" fill="none"/>
+                        <text x="200" y="388" font-size="22" font-weight="600" fill="#111" font-family="Helvetica Neue, sans-serif" text-anchor="middle">5</text>
+
+                        <!-- Arrows converging to consensus -->
+                        <line x1="80" y1="320" x2="175" y2="365" stroke="#111" stroke-width="1" stroke-dasharray="4 4" opacity="0.4"/>
+                        <line x1="200" y1="310" x2="200" y2="348" stroke="#111" stroke-width="1" stroke-dasharray="4 4" opacity="0.4"/>
+                        <line x1="320" y1="320" x2="225" y2="365" stroke="#111" stroke-width="1" stroke-dasharray="4 4" opacity="0.4"/>
+
+                        <!-- Small decorative tick marks around consensus -->
+                        <line x1="170" y1="370" x2="164" y2="364" stroke="#111" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+                        <line x1="230" y1="370" x2="236" y2="364" stroke="#111" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+                        <line x1="200" y1="348" x2="200" y2="340" stroke="#111" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+
+                        <!-- Label -->
+                        <text x="200" y="430" font-size="10" fill="#888" font-family="Helvetica Neue, sans-serif" text-anchor="middle" letter-spacing="0.12em" text-transform="uppercase">CONSENSUS</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits -->
+    <section class="benefits-section">
+        <div class="wrap">
+            <div class="benefits-layout">
+                <div class="benefits-visual">
+                    <svg viewBox="0 0 380 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Browser window frame -->
+                        <rect x="20" y="20" width="340" height="240" rx="4" stroke="#111" stroke-width="1.5" fill="none"/>
+                        <line x1="20" y1="48" x2="360" y2="48" stroke="#111" stroke-width="1"/>
+                        <circle cx="36" cy="34" r="4" stroke="#111" stroke-width="1" fill="none"/>
+                        <circle cx="50" cy="34" r="4" stroke="#111" stroke-width="1" fill="none"/>
+                        <circle cx="64" cy="34" r="4" stroke="#111" stroke-width="1" fill="none"/>
+
+                        <!-- Cards inside browser -->
+                        <rect x="50" y="70" width="40" height="56" rx="3" stroke="#111" stroke-width="1" fill="none"/>
+                        <text x="64" y="104" font-size="16" font-weight="600" fill="#111" font-family="Helvetica Neue, sans-serif" text-anchor="middle">3</text>
+
+                        <rect x="100" y="70" width="40" height="56" rx="3" stroke="#111" stroke-width="1.5" fill="#111"/>
+                        <text x="114" y="104" font-size="16" font-weight="600" fill="#fff" font-family="Helvetica Neue, sans-serif" text-anchor="middle">5</text>
+
+                        <rect x="150" y="70" width="40" height="56" rx="3" stroke="#111" stroke-width="1" fill="none"/>
+                        <text x="164" y="104" font-size="16" font-weight="600" fill="#111" font-family="Helvetica Neue, sans-serif" text-anchor="middle">8</text>
+
+                        <rect x="200" y="70" width="40" height="56" rx="3" stroke="#111" stroke-width="1" fill="none"/>
+                        <text x="214" y="104" font-size="16" font-weight="600" fill="#111" font-family="Helvetica Neue, sans-serif" text-anchor="middle">13</text>
+
+                        <!-- Team list inside browser -->
+                        <line x1="50" y1="150" x2="280" y2="150" stroke="#111" stroke-width="0.5" opacity="0.3"/>
+                        <circle cx="62" cy="168" r="8" stroke="#111" stroke-width="1" fill="none"/>
+                        <line x1="78" y1="168" x2="140" y2="168" stroke="#111" stroke-width="1" opacity="0.3"/>
+                        <text x="260" y="172" font-size="9" font-weight="600" fill="#111" font-family="Helvetica Neue, sans-serif" text-anchor="middle">VOTED</text>
+
+                        <circle cx="62" cy="192" r="8" stroke="#111" stroke-width="1" fill="none"/>
+                        <line x1="78" y1="192" x2="130" y2="192" stroke="#111" stroke-width="1" opacity="0.3"/>
+                        <text x="260" y="196" font-size="9" font-weight="600" fill="#111" font-family="Helvetica Neue, sans-serif" text-anchor="middle">VOTED</text>
+
+                        <circle cx="62" cy="216" r="8" stroke="#111" stroke-width="1" fill="none"/>
+                        <line x1="78" y1="216" x2="120" y2="216" stroke="#111" stroke-width="1" opacity="0.3"/>
+                        <text x="260" y="220" font-size="9" fill="#888" font-family="Helvetica Neue, sans-serif" text-anchor="middle">...</text>
+
+                        <!-- Devices -->
+                        <!-- Tablet -->
+                        <rect x="40" y="290" width="100" height="60" rx="4" stroke="#111" stroke-width="1.5" fill="none"/>
+                        <line x1="55" y1="306" x2="95" y2="306" stroke="#111" stroke-width="0.75" opacity="0.3"/>
+                        <line x1="55" y1="316" x2="85" y2="316" stroke="#111" stroke-width="0.75" opacity="0.3"/>
+                        <line x1="55" y1="326" x2="90" y2="326" stroke="#111" stroke-width="0.75" opacity="0.3"/>
+
+                        <!-- Phone -->
+                        <rect x="160" y="290" width="50" height="60" rx="4" stroke="#111" stroke-width="1.5" fill="none"/>
+                        <line x1="170" y1="306" x2="200" y2="306" stroke="#111" stroke-width="0.75" opacity="0.3"/>
+                        <line x1="170" y1="316" x2="195" y2="316" stroke="#111" stroke-width="0.75" opacity="0.3"/>
+
+                        <!-- Connection arcs -->
+                        <path d="M90 280 Q90 286 90 290" stroke="#111" stroke-width="1" stroke-dasharray="3 3" opacity="0.3"/>
+                        <path d="M185 270 Q185 280 185 290" stroke="#111" stroke-width="1" stroke-dasharray="3 3" opacity="0.3"/>
+                    </svg>
+                </div>
+
+                <div class="benefits-text">
+                    <span class="label">The benefits</span>
+                    <h2>Why teams choose Agile Poker</h2>
+
+                    <ul class="benefits-list">
+                        <li>
+                            <span class="check-mark"><svg viewBox="0 0 18 18"><polyline points="3,9 7,13 15,5"/></svg></span>
+                            <span><strong>Real-time collaboration</strong> &mdash; instant updates for all participants</span>
+                        </li>
+                        <li>
+                            <span class="check-mark"><svg viewBox="0 0 18 18"><polyline points="3,9 7,13 15,5"/></svg></span>
+                            <span><strong>Distraction-free interface</strong> &mdash; keeps focus on estimation</span>
+                        </li>
+                        <li>
+                            <span class="check-mark"><svg viewBox="0 0 18 18"><polyline points="3,9 7,13 15,5"/></svg></span>
+                            <span><strong>Fibonacci and custom decks</strong> &mdash; match your workflow</span>
+                        </li>
+                        <li>
+                            <span class="check-mark"><svg viewBox="0 0 18 18"><polyline points="3,9 7,13 15,5"/></svg></span>
+                            <span><strong>Works on any device</strong> &mdash; desktop, tablet, or mobile</span>
+                        </li>
+                        <li>
+                            <span class="check-mark"><svg viewBox="0 0 18 18"><polyline points="3,9 7,13 15,5"/></svg></span>
+                            <span><strong>Open source</strong> &mdash; transparent, community-built</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison -->
+    <section class="comparison-section">
+        <div class="wrap">
+            <div class="comparison-header">
+                <span class="label">The comparison</span>
+                <h2>How we stack up</h2>
+            </div>
+
+            <div class="comparison-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Agile Poker</th>
+                            <th>Planning Poker Online</th>
+                            <th>Scrum Poker Online</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Free</td>
+                            <td><span class="dot-yes"></span></td>
+                            <td><span class="dot-yes"></span></td>
+                            <td><span class="dot-no">&mdash;</span></td>
+                        </tr>
+                        <tr>
+                            <td>Ad-free</td>
+                            <td><span class="dot-yes"></span></td>
+                            <td><span class="dot-no">&mdash;</span></td>
+                            <td><span class="dot-yes"></span></td>
+                        </tr>
+                        <tr>
+                            <td>No Registration</td>
+                            <td><span class="dot-yes"></span></td>
+                            <td><span class="dot-no">&mdash;</span></td>
+                            <td><span class="dot-no">&mdash;</span></td>
+                        </tr>
+                        <tr>
+                            <td>Open Source</td>
+                            <td><span class="dot-yes"></span></td>
+                            <td><span class="dot-no">&mdash;</span></td>
+                            <td><span class="dot-no">&mdash;</span></td>
+                        </tr>
+                        <tr>
+                            <td>Privacy-first</td>
+                            <td><span class="dot-yes"></span></td>
+                            <td><span class="dot-no">&mdash;</span></td>
+                            <td><span class="dot-yes"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Real-time Updates</td>
+                            <td><span class="dot-yes"></span></td>
+                            <td><span class="dot-yes"></span></td>
+                            <td><span class="dot-yes"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <div class="wrap-narrow">
+            <span class="label">Ready?</span>
+            <h2>Start estimating today</h2>
+            <p>No account needed. Create a session and share the link with your team.</p>
+            <a href="https://agile.junaid.guru/" class="cta-button">Start a session</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="wrap">
+            <div class="footer-inner">
+                <div class="footer-brand">Agile Poker</div>
+                <div class="footer-links">
+                    <a href="https://agile.junaid.guru/">Start Session</a>
+                    <a href="https://github.com/poly-glot/agile-poker" target="_blank" rel="noopener">GitHub</a>
+                    <a href="https://github.com/poly-glot/agile-poker/issues" target="_blank" rel="noopener">Report Issue</a>
+                    <a href="https://github.com/poly-glot/agile-poker/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
+                </div>
+            </div>
+            <div class="footer-copyright">
+                &copy; 2026 Agile Poker. Free and open source forever.
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

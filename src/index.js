@@ -10,7 +10,11 @@ import './component/team-story-points'
 import './component/share-link'
 import './component/dialog'
 
+import { initLanding } from './component/landing'
+
 async function main () {
+  initLanding()
+
   AlertService.init()
 
   await RealtimeDatabase.init()

@@ -1,0 +1,303 @@
+/* ── Promotion Dialog ── */
+
+/* Entrance animation — uses opacity only to avoid breaking native dialog centering */
+@keyframes promotionDialogIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+dialog.promotion-vote-dialog {
+  animation: promotionDialogIn 0.25s ease both;
+  max-width: 440px;
+}
+
+dialog.promotion-vote-dialog[open]::backdrop {
+  animation: backdropIn 0.25s ease both;
+}
+
+@keyframes backdropIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ── Header ── */
+dialog.promotion-vote-dialog .dialog__header h1 {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #888;
+}
+
+/* ── Content layout ── */
+dialog.promotion-vote-dialog .promotion-dialog {
+  align-items: center;
+  gap: 0;
+  text-align: center;
+}
+
+/* ── Requester info ── */
+.promotion-dialog__info {
+  margin-bottom: 28px;
+}
+
+.promotion-dialog__requester-line {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #222;
+  margin: 0;
+}
+
+.promotion-dialog__requester-line strong {
+  font-weight: 700;
+  color: #111;
+}
+
+/* ── Circular Timer ── */
+.promotion-dialog__timer-ring {
+  position: relative;
+  width: 130px;
+  height: 130px;
+  margin: 0 auto 28px;
+}
+
+.promotion-timer-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.promotion-timer-track {
+  fill: none;
+  stroke: rgb(0 0 0 / 8%);
+  stroke-width: 5;
+}
+
+.promotion-timer-progress {
+  fill: none;
+  stroke: #2e7d5b;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 326.73;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1s linear, stroke 0.6s ease;
+}
+
+.promotion-timer-progress.timer-warning {
+  stroke: #c5930a;
+}
+
+.promotion-timer-progress.timer-urgent {
+  stroke: #ac1b11;
+}
+
+.promotion-timer-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.promotion-timer-value {
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: #111;
+}
+
+.promotion-timer-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #888;
+  margin-top: 4px;
+}
+
+/* Color transitions for timer text */
+.promotion-dialog__timer-ring.timer-warning .promotion-timer-value { color: #9a7500; }
+.promotion-dialog__timer-ring.timer-urgent .promotion-timer-value { color: #ac1b11; }
+
+/* ── Hidden original timer (kept for test compat) ── */
+.promotion-dialog__timer {
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.promotion-dialog__timer.timer-urgent {
+  color: #ac1b11;
+}
+
+/* ── Vote Stats ── */
+.promotion-dialog__stats {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-bottom: 24px;
+  padding: 16px 0;
+  border-top: 1px solid rgb(0 0 0 / 8%);
+  border-bottom: 1px solid rgb(0 0 0 / 8%);
+  width: 100%;
+}
+
+.promotion-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.promotion-stat__count {
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.promotion-stat__count.stat-bump {
+  transform: scale(1.25);
+}
+
+.promotion-stat__label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #888;
+}
+
+.promotion-stat--approve .promotion-stat__count { color: #2e7d5b; }
+.promotion-stat--reject .promotion-stat__count { color: #ac1b11; }
+.promotion-stat--pending .promotion-stat__count { color: #888; }
+
+/* ── Vote List ── */
+.promotion-dialog__votes {
+  flex: 1;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.promotion-dialog__vote-entry {
+  align-items: center;
+  border-bottom: 1px solid rgb(0 0 0 / 6%);
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  animation: voteEntryIn 0.3s ease both;
+}
+
+@keyframes voteEntryIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.promotion-dialog__vote-entry:last-child {
+  border-bottom: none;
+}
+
+.promotion-dialog__vote-name {
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: #222;
+}
+
+.promotion-dialog__vote-status {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.promotion-dialog__vote-status.vote-approve {
+  color: #2e7d5b;
+}
+
+.promotion-dialog__vote-status.vote-reject {
+  color: #ac1b11;
+}
+
+.promotion-dialog__vote-status.vote-pending {
+  color: #888;
+}
+
+/* ── Action Buttons ── */
+.promotion-dialog__actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  padding: 8px 0 0;
+  width: 100%;
+}
+
+.promotion-dialog__actions button {
+  min-width: 140px;
+  min-height: 46px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+
+.promotion-dialog__actions button:active:not([disabled]) {
+  transform: scale(0.97);
+}
+
+.promotion-dialog__actions button[disabled] {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.button-approve {
+  background: #2e7d5b;
+  border-color: #2e7d5b;
+  color: #fff;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+}
+
+.button-approve:hover:not([disabled]),
+.button-approve:focus:not([disabled]) {
+  background: #256b4c;
+}
+
+.button-danger:hover:not([disabled]),
+.button-danger:focus:not([disabled]) {
+  background: #8e1610;
+}
+
+/* ── Result ── */
+.promotion-dialog__result {
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 20px 0;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  animation: resultIn 0.4s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+@keyframes resultIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.promotion-dialog__result.result-approved {
+  color: #2e7d5b;
+}
+
+.promotion-dialog__result.result-denied {
+  color: #ac1b11;
+}

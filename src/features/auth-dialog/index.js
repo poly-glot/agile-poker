@@ -1,5 +1,7 @@
+import { getAuth } from 'firebase/auth'
 import database from '../database'
 import AlertService from '../../component/alert/alert'
+import { showLanding, isLandingVisible } from '../../component/landing'
 
 /**
  * Request user to provide
@@ -7,7 +9,12 @@ import AlertService from '../../component/alert/alert'
 export class AuthDialog {
   toggleVisibilityBasedOnAuth (user) {
     if (!user) {
-      this.show()
+      const hasRoomId = new URLSearchParams(window.location.search).has('roomId')
+      if (hasRoomId) {
+        this.show()
+      } else {
+        showLanding()
+      }
     } else {
       this.hide()
     }
@@ -31,6 +38,14 @@ export class AuthDialog {
       form.querySelector('#localstorageRequired').remove()
     } else {
       form.querySelector('[type=submit]').disabled = true
+    }
+
+    const closeBtn = dialog.querySelector('.dialog__close')
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        this.hide()
+        showLanding()
+      })
     }
 
     document.body.appendChild(dialog)
@@ -118,4 +133,16 @@ export class AuthDialog {
   }
 }
 
-export default new AuthDialog()
+const authDialog = new AuthDialog()
+
+document.addEventListener('landing:start-session', async () => {
+  const user = getAuth().currentUser
+  if (user) {
+    const { default: storyPointScreen } = await import('../story-point-screen')
+    storyPointScreen.resumeJourney(user)
+  } else {
+    authDialog.show()
+  }
+})
+
+export default authDialog

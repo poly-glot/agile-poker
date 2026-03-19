@@ -1,0 +1,170 @@
+{
+  "name": "Agile Poker Development",
+  "dockerComposeFile": "docker-compose.devcontainer.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace/agile-poker",
+  "remoteUser": "vscode",
+
+  "features": {
+    // Common utilities (git, zsh, oh-my-zsh) - creates user first
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "configureZshAsDefaultShell": true,
+      "installOhMyZsh": true,
+      "username": "vscode",
+      "upgradePackages": true
+    },
+
+    // Claude Code CLI
+    "ghcr.io/stu-bell/devcontainer-features/claude-code:0": {
+      "username": "vscode"
+    },
+
+    // Node.js 22 for Vite + Firebase
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "22",
+      "nodeGypDependencies": true,
+      "installYarnUsingApt": false
+    },
+
+    // Docker-in-Docker for building images
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "moby": true,
+      "dockerDashComposeVersion": "v2"
+    },
+
+    // Google Cloud CLI for Firebase/GCP deployment
+    "ghcr.io/dhoeric/features/google-cloud-cli:1": {},
+
+    // GitHub CLI for PR workflows
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "installDirectlyFromGitHubRelease": true,
+      "version": "latest"
+    },
+
+    // Java 21 (required by Firebase emulators)
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "21",
+      "jdkDistro": "tem",
+      "installMaven": false,
+      "installGradle": false
+    }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // JavaScript / Frontend
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "stylelint.vscode-stylelint",
+
+        // Code quality
+        "sonarsource.sonarlint-vscode",
+        "streetsidesoftware.code-spell-checker",
+
+        // Docker
+        "ms-azuretools.vscode-docker",
+
+        // Testing
+        "hbenl.vscode-test-explorer",
+        "ms-playwright.playwright",
+
+        // Git
+        "eamodio.gitlens",
+
+        // Markdown
+        "yzhang.markdown-all-in-one",
+
+        // Firebase
+        "toba.vsfire"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "terminal.integrated.profiles.linux": {
+          "zsh": {
+            "path": "/bin/zsh"
+          }
+        },
+        "editor.formatOnSave": true,
+        "eslint.validate": ["javascript"]
+      }
+    }
+  },
+
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "postStartCommand": "bash .devcontainer/post-start.sh",
+
+  "mounts": [
+    // Claude config
+    "source=${localEnv:HOME}/.claude,target=/home/vscode/.claude,type=bind",
+
+    // GCloud config
+    "source=${localEnv:HOME}/.config/gcloud,target=/home/vscode/.config/gcloud,type=bind",
+
+    // NPM cache (speeds up installs)
+    "source=agilepoker-npm-cache,target=/home/vscode/.npm,type=volume",
+
+    // Playwright browsers cache
+    "source=agilepoker-playwright-cache,target=/home/vscode/.cache/ms-playwright,type=volume"
+  ],
+
+  "containerEnv": {
+    "CLAUDE_CONFIG_DIR": "/home/vscode/.claude",
+
+    // Firebase emulators bind to 0.0.0.0 for host access
+    "FIREBASE_EMULATOR_HOST": "0.0.0.0",
+
+    // Playwright
+    "PLAYWRIGHT_BROWSERS_PATH": "/home/vscode/.cache/ms-playwright"
+  },
+
+  "forwardPorts": [
+    5173,  // Vite dev server
+    4000,  // Firebase Emulator UI
+    5001,  // Firebase Functions emulator
+    5002,  // Firebase Hosting emulator
+    9001,  // Firebase Database emulator
+    9099   // Firebase Auth emulator
+  ],
+
+  "portsAttributes": {
+    "5173": {
+      "label": "Vite Dev Server",
+      "onAutoForward": "notify"
+    },
+    "4000": {
+      "label": "Firebase Emulator UI",
+      "onAutoForward": "notify"
+    },
+    "5001": {
+      "label": "Firebase Functions",
+      "onAutoForward": "silent"
+    },
+    "5002": {
+      "label": "Firebase Hosting",
+      "onAutoForward": "silent"
+    },
+    "9001": {
+      "label": "Firebase Database",
+      "onAutoForward": "silent"
+    },
+    "9099": {
+      "label": "Firebase Auth",
+      "onAutoForward": "silent"
+    }
+  },
+
+  "runArgs": [],
+
+  // Lifecycle scripts
+  "initializeCommand": "echo 'Initializing devcontainer...'",
+  "onCreateCommand": "echo 'Container created'",
+  "updateContentCommand": "echo 'Content updated'",
+
+  // Remote environment
+  "remoteEnv": {
+    "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}"
+  }
+}
