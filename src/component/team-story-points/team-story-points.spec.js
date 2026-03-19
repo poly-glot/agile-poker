@@ -29,26 +29,26 @@ describe('TeamStoryPoints', () => {
     it('Compose list by story points', () => {
       expect(instance.render(members, true)).toMatchInlineSnapshot(`
         "
-                          <div class="team-story-points__entry">
-                            <div class="team-story-points__name" data-cy="name">Oliver</div>
-                            <div class="team-story-points__points" data-cy="points">11</div>
-                          </div>
-                        
-                          <div class="team-story-points__entry">
-                            <div class="team-story-points__name" data-cy="name">George</div>
-                            <div class="team-story-points__points" data-cy="points">8</div>
-                          </div>
-                        
-                          <div class="team-story-points__entry">
-                            <div class="team-story-points__name" data-cy="name">Harry</div>
-                            <div class="team-story-points__points" data-cy="points">5</div>
-                          </div>
-                        
-                          <div class="team-story-points__entry">
-                            <div class="team-story-points__name" data-cy="name">Ali, Jack, Oscar</div>
-                            <div class="team-story-points__points" data-cy="points">3</div>
-                          </div>
-                        "
+                              <div class="team-story-points__entry">
+                                <div class="team-story-points__name" data-cy="name">Oliver</div>
+                                <div class="team-story-points__points" data-cy="points">11</div>
+                              </div>
+                            
+                              <div class="team-story-points__entry">
+                                <div class="team-story-points__name" data-cy="name">George</div>
+                                <div class="team-story-points__points" data-cy="points">8</div>
+                              </div>
+                            
+                              <div class="team-story-points__entry">
+                                <div class="team-story-points__name" data-cy="name">Harry</div>
+                                <div class="team-story-points__points" data-cy="points">5</div>
+                              </div>
+                            
+                              <div class="team-story-points__entry">
+                                <div class="team-story-points__name" data-cy="name">Ali, Jack, Oscar</div>
+                                <div class="team-story-points__points" data-cy="points">3</div>
+                              </div>
+                            "
       `)
     })
 
@@ -60,38 +60,38 @@ describe('TeamStoryPoints', () => {
 
       expect(instance.render(members2, true)).toMatchInlineSnapshot(`
         "
-                          <div class="team-story-points__entry">
-                            <div class="team-story-points__name" data-cy="name">George</div>
-                            <div class="team-story-points__points" data-cy="points">8</div>
-                          </div>
-                        
-                          <div class="team-story-points__entry">
-                            <div class="team-story-points__name" data-cy="name">Jack, Oscar</div>
-                            <div class="team-story-points__points" data-cy="points">3</div>
-                          </div>
-                        
-                          <div class="team-story-points__entry">
-                            <div class="team-story-points__name" data-cy="name">Oliver</div>
-                            <div class="team-story-points__points" data-cy="points">
-                              <div class="team-story-points__userwaiting">
-                                <div class="team-story-points__label">Waiting</div>
-                                <img src="/assets/loading.gif" alt="Waiting" class="team-story-points__icon" width="20px" height="20px">
+                              <div class="team-story-points__entry">
+                                <div class="team-story-points__name" data-cy="name">George</div>
+                                <div class="team-story-points__points" data-cy="points">8</div>
                               </div>
-                              
-                            </div>
-                          </div>
-                        
-                          <div class="team-story-points__entry">
-                            <div class="team-story-points__name" data-cy="name">Harry</div>
-                            <div class="team-story-points__points" data-cy="points">
-                              <div class="team-story-points__userwaiting">
-                                <div class="team-story-points__label">Waiting</div>
-                                <img src="/assets/loading.gif" alt="Waiting" class="team-story-points__icon" width="20px" height="20px">
+                            
+                              <div class="team-story-points__entry">
+                                <div class="team-story-points__name" data-cy="name">Jack, Oscar</div>
+                                <div class="team-story-points__points" data-cy="points">3</div>
                               </div>
-                              
-                            </div>
-                          </div>
-                        "
+                            
+                              <div class="team-story-points__entry">
+                                <div class="team-story-points__name" data-cy="name">Oliver</div>
+                                <div class="team-story-points__points" data-cy="points">
+                                  <div class="team-story-points__userwaiting">
+                                    <div class="team-story-points__label">Waiting</div>
+                                    <img src="/assets/loading.gif" alt="Waiting" class="team-story-points__icon" width="20px" height="20px">
+                                  </div>
+                                  
+                                </div>
+                              </div>
+                            
+                              <div class="team-story-points__entry">
+                                <div class="team-story-points__name" data-cy="name">Harry</div>
+                                <div class="team-story-points__points" data-cy="points">
+                                  <div class="team-story-points__userwaiting">
+                                    <div class="team-story-points__label">Waiting</div>
+                                    <img src="/assets/loading.gif" alt="Waiting" class="team-story-points__icon" width="20px" height="20px">
+                                  </div>
+                                  
+                                </div>
+                              </div>
+                            "
       `)
     })
   })

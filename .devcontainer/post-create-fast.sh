@@ -1,29 +1,13 @@
 #!/bin/bash
 set -e
 
-echo "Running post-create setup for Agile Poker development..."
+echo "Running FAST post-create setup for Agile Poker development..."
 
 # ============================================================
 # Fix volume mount ownership (.cache is created as root by Docker volume mounts)
 # ============================================================
 echo "Fixing directory ownership for volume mounts..."
 sudo chown -R "$(id -u):$(id -g)" ~/.cache 2>/dev/null || true
-
-# ============================================================
-# System packages
-# ============================================================
-echo "Installing system packages..."
-sudo apt-get update -qq > /dev/null 2>&1 || true
-sudo apt-get install -y -qq \
-    curl \
-    wget \
-    ca-certificates \
-    gnupg \
-    lsb-release \
-    jq \
-    htop \
-    tree \
-    2>&1 | grep -v "^Setting up\|^Processing\|^Preparing\|^Unpacking" || true
 
 # ============================================================
 # Node.js and NPM setup
@@ -35,18 +19,20 @@ npm config set cache ~/.npm --global
 npm config set update-notifier false --global
 
 # ============================================================
-# Firebase CLI
+# Git configuration
 # ============================================================
-echo "Installing Firebase CLI (this may take a minute)..."
-npm install -g firebase-tools --no-audit --no-fund --loglevel=error 2>&1 | grep -E "added|removed|changed|audited" || true
+echo "Configuring Git..."
+git config --global --add safe.directory /workspace/agile-poker
+git config --global --add safe.directory /workspace
+git config --global init.defaultBranch main
 
-# ============================================================
-# GCloud setup
-# ============================================================
-if command -v gcloud &> /dev/null; then
-    echo "Configuring Google Cloud CLI..."
-    gcloud auth configure-docker europe-docker.pkg.dev --quiet 2>/dev/null || true
-fi
+# Helpful aliases
+git config --global alias.st status
+git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.ci commit
+git config --global alias.unstage 'reset HEAD --'
+git config --global alias.last 'log -1 HEAD'
 
 # ============================================================
 # Claude CLI configuration
@@ -68,59 +54,19 @@ if [ -f ~/.bashrc ]; then
 fi
 
 # ============================================================
-# Git configuration
+# Project dependencies (ROOT ONLY)
 # ============================================================
-echo "Configuring Git..."
-git config --global --add safe.directory /workspace/agile-poker
-git config --global --add safe.directory /workspace
-
-# Set default branch
-git config --global init.defaultBranch main
-
-# Helpful aliases
-git config --global alias.st status
-git config --global alias.co checkout
-git config --global alias.br branch
-git config --global alias.ci commit
-git config --global alias.unstage 'reset HEAD --'
-git config --global alias.last 'log -1 HEAD'
-
-# ============================================================
-# Project dependencies
-# ============================================================
-echo "Installing project dependencies (this may take 2-3 minutes)..."
+echo "Installing project dependencies..."
 cd /workspace/agile-poker
 
-# Install root dependencies with progress
+# Install root dependencies only
 if [ -f "package-lock.json" ]; then
     echo "  → Running npm ci..."
-    npm ci --no-audit --no-fund --loglevel=error || {
-        echo "  → npm ci failed, trying npm install..."
-        npm install --no-audit --no-fund --loglevel=error
-    }
+    npm ci --no-audit --no-fund --prefer-offline 2>&1 | tail -n 2
 else
     echo "  → Running npm install..."
-    npm install --no-audit --no-fund --loglevel=error
+    npm install --no-audit --no-fund --prefer-offline 2>&1 | tail -n 2
 fi
-
-# Install functions dependencies
-if [ -d "functions" ]; then
-    echo "Installing Firebase Functions dependencies..."
-    cd functions
-    if [ -f "package-lock.json" ]; then
-        npm ci --no-audit --no-fund --loglevel=error || npm install --no-audit --no-fund --loglevel=error
-    else
-        npm install --no-audit --no-fund --loglevel=error
-    fi
-    cd /workspace/agile-poker
-fi
-
-# ============================================================
-# Playwright setup
-# ============================================================
-echo "Installing Playwright browsers (this may take 1-2 minutes)..."
-npx playwright install chromium --with-deps 2>&1 | grep -E "Downloading|chromium|Done" || true
-echo "  ✓ Playwright setup complete"
 
 # ============================================================
 # PATH and aliases
@@ -164,23 +110,30 @@ alias dclogs='docker compose logs -f'
 alias cy-open='npx cypress open'
 alias cy-run='npx cypress run'
 
+# Setup helpers (run these on-demand)
+alias setup-firebase='npm install -g firebase-tools'
+alias setup-functions='cd functions && npm install && cd ..'
+alias setup-playwright='npx playwright install chromium --with-deps'
+
 EOF
 
 # ============================================================
-# Verify installations
+# Done!
 # ============================================================
 echo ""
-echo "Post-create setup complete!"
+echo "✓ Fast setup complete!"
 echo ""
 echo "Environment Information:"
 echo "  - Node:     $(node --version 2>&1)"
 echo "  - NPM:      $(npm --version 2>&1)"
-echo "  - Firebase:  $(firebase --version 2>&1)"
-echo "  - Java:      $(java -version 2>&1 | head -n 1)"
+echo ""
+echo "On-demand installations (run when needed):"
+echo "  - Firebase CLI:        setup-firebase"
+echo "  - Functions deps:      setup-functions"
+echo "  - Playwright:          setup-playwright"
 echo ""
 echo "Quick Start:"
-echo "  - Run app:        dev (starts Firebase emulators + Vite)"
+echo "  - Run app:        dev"
 echo "  - Run tests:      test"
 echo "  - Build:          build"
-echo "  - Firebase UI:    http://localhost:4000"
 echo ""
