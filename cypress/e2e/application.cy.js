@@ -8,6 +8,18 @@ describe('Room Administrator', () => {
     cy.percySnapshot()
   })
 
+  it('Should show the landing page', function () {
+    cy.get('#landing-page').should('be.visible')
+    cy.get('#app-view').should('not.be.visible')
+    cy.percySnapshot()
+  })
+
+  it('Should transition to app view when clicking Start a session', function () {
+    cy.get('[data-cy=start-session]').first().click()
+    cy.get('#landing-page').should('not.be.visible')
+    cy.get('#app-view').should('be.visible')
+  })
+
   it('Should inform user when application is ready to use', function () {
     cy.get('[data-cy=notification]').should('have.text', 'Application is ready to use')
     cy.percySnapshot()

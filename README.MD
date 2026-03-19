@@ -467,12 +467,14 @@ agile-poker/
 
 ### Development
 
-| Command | Description |
-|---------|-------------|
-| `npm start` | Start Vite dev server + Firebase emulators |
-| `npm run serve` | Start Firebase emulators only (no Vite) |
-| `npm run build` | Production build to `dist/` |
-| `npm run preview` | Preview the production build locally |
+| Command                                                   | Description                                |
+|-----------------------------------------------------------|--------------------------------------------|
+| `npm start`                                               | Start Vite dev server + Firebase emulators |
+| `npm run serve`                                           | Start Firebase emulators only (no Vite)    |
+| `npm run build`                                           | Production build to `dist/`                |
+| `npm run preview`                                         | Preview the production build locally       |
+| `devcontainer up`                                         | run dev containers                         |
+| `devcontainer exec claude --dangerously-skip-permissions` | exec claude                                |
 
 ### Testing
 

@@ -1,4 +1,5 @@
 import database from '../database'
+import { showLanding } from '../../component/landing'
 
 export class RoomDialog {
   show = () => {
@@ -14,6 +15,14 @@ export class RoomDialog {
 
     const form = dialog.querySelector('form')
     form.addEventListener('submit', this.onFormSubmit)
+
+    const closeBtn = dialog.querySelector('.dialog__close')
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        this.hide()
+        showLanding()
+      })
+    }
 
     document.body.appendChild(dialog)
     dialog.showModal()
